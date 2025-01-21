@@ -1,9 +1,13 @@
 import type { ConfigState } from "./state"
 
 async function setConfig(baseUrl: string, name: string, value: string) {
-  await fetch(`${baseUrl}/text/${name}/set?value=${encodeURIComponent(value)}`, {
+  const resp = await fetch(`${baseUrl}/text/${name}/set?value=${encodeURIComponent(value)}`, {
     method: "post"
   })
+  
+  if (!resp.ok) {
+    throw new Error(`Failed to set config value ${name} on device ${baseUrl}`)
+  }
 }
 
 export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {

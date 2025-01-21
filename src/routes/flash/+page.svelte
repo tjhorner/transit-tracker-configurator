@@ -29,9 +29,9 @@
       const baseUrl = await getDeviceBaseUrl()
       $config.deviceBaseUrl = baseUrl
       goto("/configure")
-    } catch (e) {
+    } catch (e: any) {
       console.error(e)
-      alert("Failed to connect to device")
+      alert(`Failed to connect to device. Try refreshing the page.\n\nDetails: ${e.message}`)
     } finally {
       loading = false
     }
@@ -39,7 +39,7 @@
 </script>
 
 <div class="layout">
-  <h1>Flash Firmware</h1>
+  <h1>Set up device</h1>
 
   <p>
     From this page, you can flash the pre-built firmware for your countdown clock and

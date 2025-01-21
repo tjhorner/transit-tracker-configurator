@@ -31,6 +31,9 @@ devDependencies:
   '@sveltejs/vite-plugin-svelte':
     specifier: ^4.0.4
     version: 4.0.4(svelte@5.19.1)(vite@5.4.14)
+  '@types/json-to-pretty-yaml':
+    specifier: ^1.2.1
+    version: 1.2.1
   '@types/w3c-web-serial':
     specifier: ^1.0.7
     version: 1.0.7
@@ -1119,6 +1122,10 @@ packages:
   /@types/geojson@7946.0.15:
     resolution: {integrity: sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==}
     dev: false
+
+  /@types/json-to-pretty-yaml@1.2.1:
+    resolution: {integrity: sha512-+uOlBkCPkny6CE2a5IAR0Q21/ZE+90MsK7EfDblDdutcey+rbMDrp3i93M6MTwbMHFB75aIFR5fVXVcnLCkAiw==}
+    dev: true
 
   /@types/leaflet@1.9.16:
     resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}

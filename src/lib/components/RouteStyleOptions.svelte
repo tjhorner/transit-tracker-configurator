@@ -32,8 +32,9 @@
           <option value={route.routeId}>{route.routeName}</option>
         {/each}
       </select>
-      <input type="color" bind:value={style.color} />
+      →
       <input type="text" bind:value={style.name} placeholder="Custom Route Name" />
+      <input type="color" bind:value={style.color} />
       <button onclick={() => styles.splice(idx, 1)}>&times;</button>
     </div>
   {/each}

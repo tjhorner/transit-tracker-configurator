@@ -62,7 +62,6 @@ function createPersistentStore<T>(key: string, initialValue: T) {
 
 export const config = createPersistentStore<ConfigState>("config", {
   apiBaseUrl: "wss://tt.horner.tj/",
-  feed: undefined,
   routes: [],
   routeStyles: [],
   abbreviations: [],

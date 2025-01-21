@@ -5,4 +5,6 @@
 
 <esp-web-install-button
   {manifest}
-></esp-web-install-button>
+>
+  <button slot="activate">Flash Firmware</button>
+</esp-web-install-button>
