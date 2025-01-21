@@ -13,19 +13,19 @@
 		"lint": "prettier --check ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/kit": "^2.0.0",
-		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"@sveltejs/adapter-auto": "^3.3.1",
+		"@sveltejs/adapter-static": "^3.0.8",
+		"@sveltejs/kit": "^2.16.1",
+		"@sveltejs/vite-plugin-svelte": "^4.0.4",
 		"@types/w3c-web-serial": "^1.0.7",
-		"prettier": "^3.3.2",
-		"prettier-plugin-svelte": "^3.2.6",
-		"svelte": "^5.16.1",
-		"svelte-check": "^4.0.0",
-		"typescript": "^5.0.0",
-		"vite": "^5.4.11"
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.3",
+		"svelte": "^5.19.1",
+		"svelte-check": "^4.1.4",
+		"typescript": "^5.7.3",
+		"vite": "^5.4.14"
 	},
 	"dependencies": {
-		"@sveltejs/adapter-static": "^3.0.8",
 		"esp-web-tools": "^10.1.0",
 		"improv-wifi-serial-sdk": "^2.5.0",
 		"json-to-pretty-yaml": "^1.2.2",

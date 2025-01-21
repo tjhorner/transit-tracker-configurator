@@ -21,7 +21,7 @@
 
   let needsZoomIn = $state(true)
 
-  const selectionGroupedByStop = $derived(Map.groupBy(selected, (r) => r.stopId))
+  const selectionGroupedByStop = $derived(Map.groupBy(selected, (r) => r.stopId).values())
 
   async function getStops(bounds: number[][]) {
     if (abortController) {
@@ -67,7 +67,7 @@
       </p>
     </div>
 
-    {#each selectionGroupedByStop as [ stopId, routes ]}
+    {#each selectionGroupedByStop as routes}
       <div class="card">
         <h3>{routes[0].stopName} ({routes[0].stopCode})</h3>
         {#each routes as route (route.routeId + route.stopId)}
