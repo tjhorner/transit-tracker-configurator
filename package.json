@@ -28,6 +28,7 @@
 		"@sveltejs/adapter-static": "^3.0.8",
 		"esp-web-tools": "^10.1.0",
 		"improv-wifi-serial-sdk": "^2.5.0",
+		"json-to-pretty-yaml": "^1.2.2",
 		"svelte-maplibre": "1.0.0-next.9"
 	}
 }

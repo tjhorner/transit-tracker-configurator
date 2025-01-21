@@ -87,15 +87,17 @@
       </div>
     {/each}
 
-    {#if selected.length > 0}
-      <h2>Countdown Preview</h2>
-
-      <div class="card">
-        <CountdownPreview feed={feed.code} routes={selected} />
-      </div>
-    {/if}
-
     <div class="controls">
+      {#if selected.length > 0}
+        <div>
+          <h2>Countdown Preview</h2>
+
+          <div class="card">
+            <CountdownPreview feed={feed.code} routes={selected} />
+          </div>
+        </div>
+      {/if}
+
       <button onclick={() => onsave?.(selected)}>
         Save
       </button>
@@ -188,7 +190,7 @@
     flex-direction: column;
     justify-content: flex-end;
     flex-grow: 1;
-    gap: 0.75em;
+    gap: 0.25em;
     margin-top: 0.75em;
   }
 
