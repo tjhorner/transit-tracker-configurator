@@ -1,6 +1,5 @@
 <script lang="ts">
   import "esp-web-tools"
-
   let { manifest } = $props()
 </script>
 

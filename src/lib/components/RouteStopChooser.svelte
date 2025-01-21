@@ -3,7 +3,7 @@
   import { MapLibre, type Map as MapLibreMap } from "svelte-maplibre"
 	import RouteChooser from "./RouteChooser.svelte"
 	import CountdownPreview from "./CountdownPreview.svelte"
-	import type { ConfigState, Feed, RouteAtStop } from "$lib/state"
+	import type { ConfigState, RouteAtStop } from "$lib/state"
 
   interface Props {
     config: ConfigState
@@ -18,6 +18,8 @@
   let abortController: AbortController | null = null
   let map: MapLibreMap | undefined = $state()
   let feed = $derived(config.feed!)
+
+  let needsZoomIn = $state(true)
 
   const selectionGroupedByStop = $derived(Map.groupBy(selected, (r) => r.stopId))
 
@@ -38,15 +40,16 @@
 
   async function onMapMoved({ target }: { target: MapLibreMap }) {
     if (target.getZoom() < 15) {
+      needsZoomIn = true
       stops = []
       return
     }
 
+    needsZoomIn = false
+
     const bounds = target.getBounds()
     stops = await getStops(bounds.toArray())
   }
-
-  $inspect(selected)
 </script>
 
 <div class="split">
@@ -60,7 +63,7 @@
       </p>
 
       <p>
-        You can select up to five routes. Zoom in to see stops.
+        You can select up to five routes.
       </p>
     </div>
 
@@ -91,7 +94,6 @@
       {#if selected.length > 0}
         <div>
           <h2>Countdown Preview</h2>
-
           <div class="card">
             <CountdownPreview feed={feed.code} routes={selected} />
           </div>
@@ -127,6 +129,12 @@
         />
       </DefaultMarker>
     {/each}
+
+    {#if needsZoomIn}
+      <div class="zoomin-overlay">
+        <p>Zoom in to see stops</p>
+      </div>
+    {/if}
   </MapLibre>
 </div>
 
@@ -134,6 +142,26 @@
   h2 {
     margin-top: 0;
     margin-bottom: 0.5em;
+  }
+
+  .zoomin-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    pointer-events: none;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .zoomin-overlay p {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 2em;
+    padding: 1em;
+    border-radius: 10px;
   }
 
   :global(.map) {
