@@ -66,7 +66,7 @@
 </script>
 
 <Popup bind:open={shown} closeOnMove>
-  <div>
+  <div class="container">
     <h2>{stop.name} ({stop.stopCode})</h2>
     {#if routes.length === 0}
       <Skeleton />
@@ -98,6 +98,11 @@
   h2 {
     margin-top: 0;
     margin-bottom: 0.5em;
+  }
+
+  .container {
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .route {
