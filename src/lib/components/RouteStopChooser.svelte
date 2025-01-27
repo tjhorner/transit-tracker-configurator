@@ -4,6 +4,7 @@
 	import RouteChooser from "./RouteChooser.svelte"
 	import CountdownPreview from "./CountdownPreview.svelte"
 	import type { ConfigState, RouteAtStop } from "$lib/state"
+  import debounce from "p-debounce"
 
   interface Props {
     config: ConfigState
@@ -38,7 +39,7 @@
     return response.json()
   }
 
-  async function onMapMoved({ target }: { target: MapLibreMap }) {
+  async function _onMapMoved({ target }: { target: MapLibreMap }) {
     if (target.getZoom() < 15) {
       needsZoomIn = true
       stops = []
@@ -50,6 +51,8 @@
     const bounds = target.getBounds()
     stops = await getStops(bounds.toArray())
   }
+  
+  const onMapMoved = debounce(_onMapMoved, 1000)
 </script>
 
 <div class="split">

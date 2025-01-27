@@ -14,6 +14,9 @@ dependencies:
   json-to-pretty-yaml:
     specifier: ^1.2.2
     version: 1.2.2
+  p-debounce:
+    specifier: ^4.0.0
+    version: 4.0.0
   svelte-maplibre:
     specifier: 1.0.0-next.9
     version: 1.0.0-next.9(svelte@5.19.1)
@@ -1535,6 +1538,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /p-debounce@4.0.0:
+    resolution: {integrity: sha512-4Ispi9I9qYGO4lueiLDhe4q4iK5ERK8reLsuzH6BPaXn53EGaua8H66PXIFGrW897hwjXp+pVLrm/DLxN0RF0A==}
+    engines: {node: '>=12'}
+    dev: false
 
   /pako@2.1.0:
     resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
