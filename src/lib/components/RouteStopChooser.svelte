@@ -190,6 +190,17 @@
     padding: 1em;
   }
 
+  @media (max-width: 768px) {
+    .split {
+      flex-direction: column-reverse;
+    }
+
+    .side {
+      width: 100%;
+      flex-basis: 100%;
+    }
+  }
+
   .selected-route:not(:last-child) {
     margin-bottom: 0.5em;
   }
