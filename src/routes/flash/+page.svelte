@@ -1,27 +1,10 @@
 <script lang="ts">
 	import { goto } from "$app/navigation"
 	import FlashButton from "$lib/components/FlashButton.svelte"
+	import { getDeviceBaseUrl } from "$lib/device"
 	import { config } from "$lib/state"
-  import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 
   let loading = $state(false)
-
-  async function getDeviceBaseUrl(): Promise<string> {
-    const port = await navigator.serial.requestPort()
-    await port.open({ baudRate: 115200 })
-
-    const improv = new ImprovSerial(port, console)
-    await improv.initialize()
-
-    if (!improv.nextUrl) {
-      throw new Error("Device did not report URL")
-    }
-
-    await improv.close()
-    await port.close()
-
-    return improv.nextUrl
-  }
 
   async function saveDeviceBaseUrl() {
     loading = true
@@ -42,7 +25,7 @@
   <h1>Set up device</h1>
 
   <p>
-    From this page, you can flash the pre-built firmware for your countdown clock and
+    From this page, you can flash the pre-built firmware for your Transit Tracker and
     connect it to your Wi-Fi network. Plug in the board and press Connect to get started.
   </p>
 

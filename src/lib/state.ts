@@ -34,6 +34,7 @@ export interface ConfigState {
   routes: RouteAtStop[]
   routeStyles: RouteStyle[]
   abbreviations: Abbreviation[]
+  stopTimeOffsets: Record<string, number>
 }
 
 function createPersistentStore<T>(key: string, initialValue: T) {
@@ -65,4 +66,5 @@ export const config = createPersistentStore<ConfigState>("config", {
   routes: [],
   routeStyles: [],
   abbreviations: [],
+  stopTimeOffsets: {},
 })

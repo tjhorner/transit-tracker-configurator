@@ -8,12 +8,13 @@
 
   interface Props {
     config: ConfigState
-    onsave?: (routes: RouteAtStop[]) => void
+    onsave?: (routes: RouteAtStop[], timeOffsets: Record<string, number>) => void
   }
 
   let { config, onsave }: Props = $props()
 
   let selected = $state(config.routes)
+  let timeOffsets = $state(config.stopTimeOffsets)
   let disabled = $derived(selected.length >= 5)
   let stops: any[] = $state([])
   let abortController: AbortController | null = null
@@ -66,6 +67,13 @@
       </p>
 
       <p>
+        You can also optionally set a travel time for each stop; this will adjust the
+        countdown time to account for the time it takes for you to get to the stop.
+        For example, if it takes you 5 minutes to walk to a stop, set the travel
+        time to 5 minutes. (This does not currently affect the preview.)
+      </p>
+
+      <p>
         You can select up to five routes.
       </p>
     </div>
@@ -73,6 +81,24 @@
     {#each selectionGroupedByStop as routes}
       <div class="card">
         <h3>{routes[0].stopName} ({routes[0].stopCode})</h3>
+
+        <div class="time-offset">
+          {#if timeOffsets[routes[0].stopId]}
+            <label>
+              Travel Time:
+              <input
+                type="number"
+                value={timeOffsets[routes[0].stopId]}
+                oninput={(e) => timeOffsets[routes[0].stopId] = parseInt(e.currentTarget.value)}
+              /> minutes
+            </label>
+          {:else}
+            <button onclick={() => timeOffsets[routes[0].stopId] = 1}>
+              Set Travel Time
+            </button>
+          {/if}
+        </div>
+
         {#each routes as route (route.routeId + route.stopId)}
           <div class="selected-route">
             <label>
@@ -103,7 +129,7 @@
         </div>
       {/if}
 
-      <button onclick={() => onsave?.(selected)}>
+      <button onclick={() => onsave?.(selected, timeOffsets)}>
         Save
       </button>
     </div>
@@ -225,6 +251,15 @@
   .card h3 {
     margin-top: 0;
     margin-bottom: 0.5em;
+  }
+
+  .time-offset {
+    margin-bottom: 0.5em;
+    vertical-align: bottom;
+  }
+
+  .time-offset input {
+    width: 4em;
   }
 
   .controls {

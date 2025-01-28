@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { pushConfigToDevice } from "$lib/device"
 	import { type ConfigState, config } from "$lib/state"
+	import VerticalButtons from "./ui/VerticalButtons.svelte"
 
   interface Props {
     configState: ConfigState
@@ -18,7 +19,7 @@
   let { configState }: Props = $props()
 </script>
 
-<div class="options">
+<VerticalButtons>
   <h1>Countdown Display Configurator</h1>
 
   <a href="/flash">
@@ -66,52 +67,4 @@
       Copy the YAML configuration for ESPHome.
     </a>
   {/if}
-</div>
-
-<style>
-  .options {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1em;
-  }
-
-  h1 {
-    margin: 0;
-  }
-
-  .options button {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-    text-align: left;
-  }
-
-  .options a, .options button {
-    display: block;
-    width: 100%;
-    background: #ececec;
-    border-radius: 10px;
-    padding: 1em;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .options a:hover, .options button:hover {
-    background: #ddd;
-  }
-
-  .options a:active, .options button:active {
-    background: #ccc;
-  }
-
-  hr {
-    width: 100%;
-    border: none;
-    border-top: 1px solid #ccc;
-  }
-</style>
+</VerticalButtons>

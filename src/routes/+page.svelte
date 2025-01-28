@@ -1,8 +1,36 @@
 <script lang="ts">
 	import { goto } from "$app/navigation"
-	import { onMount } from "svelte"
+	import VerticalButtons from "$lib/components/ui/VerticalButtons.svelte"
+	import { getDeviceBaseUrl } from "$lib/device"
+	import { config } from "$lib/state"
 
-  onMount(() => {
-    goto("/flash")
-  })
+  async function saveDeviceBaseUrl() {
+    try {
+      const baseUrl = await getDeviceBaseUrl()
+      $config.deviceBaseUrl = baseUrl
+      goto("/configure")
+    } catch (e: any) {
+      console.error(e)
+      alert(`Failed to connect to device. Try refreshing the page.\n\nDetails: ${e.message}`)
+    }
+  }
 </script>
+
+<VerticalButtons>
+  <h1>Welcome!</h1>
+
+  <a href="/flash">
+    <strong>Prepare new device →</strong><br>
+    I am following Eastside Urbanism's build guide and want to flash the firmware.
+  </a>
+
+  <button onclick={saveDeviceBaseUrl}>
+    <strong>Configure existing device →</strong><br>
+    I have an existing Transit Tracker and want to configure it.
+  </button>
+
+  <a href="/configure">
+    <strong>Advanced mode →</strong><br>
+    I am an advanced user and want to generate YAML config.
+  </a>
+</VerticalButtons>

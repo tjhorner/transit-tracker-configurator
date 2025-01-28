@@ -4,6 +4,7 @@
 
   function generateYaml() {
     const distinctColorsUsed = new Set($config.routeStyles.map(s => s.color.replaceAll("#", "")))
+    const routesGroupedByStop = Map.groupBy($config.routes, (r) => r.stopId).values()
 
     const generatedConfig = {
       ...(distinctColorsUsed.size > 0 ? {
@@ -15,10 +16,11 @@
       "transit_tracker": {
         "base_url": $config.apiBaseUrl,
         "feed_code": $config.feed?.code,
-        "routes": $config.routes.map(r => ({
-          "route_id": r.routeId,
-          "stop_id": r.stopId
-        })),
+        "stops": routesGroupedByStop.map(routes => ({
+          "stop_id": routes[0].stopId,
+          "time_offset": $config.stopTimeOffsets[routes[0].stopId] ? `-${$config.stopTimeOffsets[routes[0].stopId]}min` : undefined,
+          "routes": routes.map(r => r.routeId)
+        })).toArray(),
         "styles": $config.routeStyles.map(s => ({
           "route_id": s.routeId,
           "name": s.name,

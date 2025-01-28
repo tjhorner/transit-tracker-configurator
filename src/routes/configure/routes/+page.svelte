@@ -3,8 +3,9 @@
 	import RouteStopChooser from "$lib/components/RouteStopChooser.svelte"
   import { config, type RouteAtStop } from "$lib/state"
 
-  function saveRoutes(routes: RouteAtStop[]) {
+  function saveRoutes(routes: RouteAtStop[], timeOffsets: Record<string, number>) {
     $config.routes = routes
+    $config.stopTimeOffsets = timeOffsets
     goto("/configure")
   }
 </script>
