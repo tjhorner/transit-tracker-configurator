@@ -11,6 +11,16 @@ async function setConfig(baseUrl: string, name: string, value: string) {
   }
 }
 
+async function getConfig(baseUrl: string, name: string): Promise<string> {
+  const resp = await fetch(`${baseUrl}/text/${name}`)
+  if (!resp.ok) {
+    throw new Error(`Failed to get config value ${name} from device ${baseUrl}`)
+  }
+
+  const value = await resp.json()
+  return value.value
+}
+
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await navigator.serial.requestPort()
   await port.open({ baudRate: 115200 })
