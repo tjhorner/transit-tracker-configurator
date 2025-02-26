@@ -24,7 +24,10 @@
   {#each styles as style, idx}
     {@const route = configState.routes.find(route => route.routeId === style.routeId)}
     <div class="style">
-      <select bind:value={style.routeId} onchange={() => style.name = route?.routeName ?? ""}>
+      <select bind:value={style.routeId} onchange={() => {
+        style.name = route?.routeName ?? ""
+        style.color = route?.color ? `#${route.color}` : "#028e51"
+      }}>
         {#if route}
           <option value={style.routeId}>{route.routeName}</option>
         {/if}
@@ -41,7 +44,7 @@
 
   <button disabled={availableRoutes.length === 0} onclick={() => styles.push({
     routeId: availableRoutes[0].routeId,
-    color: "#028e51",
+    color: availableRoutes[0]?.color ? `#${availableRoutes[0].color}` : "#028e51",
     name: availableRoutes[0].routeName
   })}>
     Add Route Style

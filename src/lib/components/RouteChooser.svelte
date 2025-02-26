@@ -15,6 +15,7 @@
   interface Route {
     routeId: string
     name: string
+    color: string | null
     headsigns: string[]
   }
 
@@ -49,6 +50,7 @@
       routeId: route.routeId,
       routeName: route.name,
       headsigns: route.headsigns,
+      color: route.color,
     }
 
     if (target.checked) {

@@ -7,6 +7,7 @@ export interface RouteAtStop {
   routeId: string
   routeName: string
   headsigns: string[]
+  color: string | null
 }
 
 export interface RouteStyle {
