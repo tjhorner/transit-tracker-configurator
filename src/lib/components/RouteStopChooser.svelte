@@ -5,6 +5,7 @@
 	import CountdownPreview from "./CountdownPreview.svelte"
 	import type { ConfigState, RouteAtStop } from "$lib/state"
   import debounce from "p-debounce"
+	import { apiBaseUrl } from "$lib/config"
 
   interface Props {
     config: ConfigState
@@ -32,7 +33,7 @@
 
     abortController = new AbortController()
     const response = await fetch(
-      `https://tt.horner.tj/stops/${config.feed!.code}/within/${bounds[0][1]}/${bounds[0][0]}/${bounds[1][1]}/${bounds[1][0]}`,
+      `${apiBaseUrl}/stops/${config.feed!.code}/within/${bounds[0][1]}/${bounds[0][0]}/${bounds[1][1]}/${bounds[1][0]}`,
       { signal: abortController?.signal }
     )
 

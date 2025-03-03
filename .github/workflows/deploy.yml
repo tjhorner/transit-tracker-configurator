@@ -25,6 +25,8 @@ jobs:
         run: pnpm install
 
       - name: build
+        env:
+          PUBLIC_API_HOST: https://tt.horner.tj
         run: pnpm build
 
       - name: Upload Artifacts

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { apiBaseUrl } from "$lib/config"
 	import type { RouteAtStop } from "$lib/state"
 
   interface Props {
@@ -25,7 +26,7 @@
 
   async function getTrips() {
     const pairs = routes.map((r) => `${r.routeId},${r.stopId}`).join(";")
-    const response = await fetch(`https://tt.horner.tj/schedule/${feed}/${pairs}`)
+    const response = await fetch(`${apiBaseUrl}/schedule/${feed}/${pairs}`)
     trips = (await response.json()).trips
   }
 

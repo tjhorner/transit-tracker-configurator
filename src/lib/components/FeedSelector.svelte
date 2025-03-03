@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { apiBaseUrl } from "$lib/config"
 	import type { ConfigState, Feed } from "$lib/state"
 	import { onMount } from "svelte"
 
@@ -12,7 +13,7 @@
   let feeds: Feed[] = $state([])
 
   async function getFeeds() {
-    const response = await fetch("https://tt.horner.tj/feeds")
+    const response = await fetch(`${apiBaseUrl}/feeds`)
     feeds = await response.json()
   }
 

@@ -2,6 +2,7 @@
 	import type { RouteAtStop } from "$lib/state"
 	import { Popup } from "svelte-maplibre"
 	import Skeleton from "./Skeleton.svelte"
+	import { apiBaseUrl } from "$lib/config"
 
   interface Props {
     stop: any
@@ -32,7 +33,7 @@
   let shown = $state(false)
 
   async function getRoutes(stopId: string) {
-    const response = await fetch(`https://tt.horner.tj/stops/${feed}/${stopId}/routes`)
+    const response = await fetch(`${apiBaseUrl}/stops/${feed}/${stopId}/routes`)
     return response.json()
   }
 

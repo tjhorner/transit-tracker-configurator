@@ -1,4 +1,5 @@
 import { writable } from "svelte/store"
+import { apiBaseUrl } from "./config"
 
 export interface RouteAtStop {
   stopId: string
@@ -62,8 +63,15 @@ function createPersistentStore<T>(key: string, initialValue: T) {
   return store
 }
 
+function getWebSocketEndpoint(baseUrl: string) {
+  const url = new URL(baseUrl)
+  url.protocol = url.protocol === "http:" ? "ws:" : "wss:"
+  url.pathname = "/"
+  return url.href
+}
+
 export const config = createPersistentStore<ConfigState>("config", {
-  apiBaseUrl: "wss://tt.horner.tj/",
+  apiBaseUrl: getWebSocketEndpoint(apiBaseUrl),
   routes: [],
   routeStyles: [],
   abbreviations: [],
