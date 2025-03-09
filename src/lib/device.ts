@@ -58,5 +58,9 @@ export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: str
     return `${style.routeId};${style.name};${style.color.replaceAll("#", "")}`
   }).join("\n"))
 
-  await fetch(`${deviceBaseUrl}/button/reload_tracker/press`, { method: "post" })
+  await fetch(`${deviceBaseUrl}/button/reload_tracker/press`, {
+    method: "post",
+    // @ts-ignore
+    targetAddressSpace: "private"
+  })
 }
