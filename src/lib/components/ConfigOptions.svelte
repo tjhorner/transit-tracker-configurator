@@ -12,7 +12,7 @@
       await pushConfigToDevice($config, $config.deviceBaseUrl!)
     } catch(e: any) {
       console.error(e)
-      alert("Failed to push config. Make sure you are on the same network as the device.")
+      alert(`Failed to push config. Make sure you are on the same network as the device.\n\n(Error: ${e.message})`)
     }
   }
 

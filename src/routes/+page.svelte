@@ -11,7 +11,11 @@
       goto("/configure")
     } catch (e: any) {
       console.error(e)
-      alert(`Failed to connect to device. Try refreshing the page.\n\nDetails: ${e.message}`)
+      const ip = prompt(`Failed to connect to device via USB. Please enter its IP address manually.\n\n(Error: ${e.message})`)
+      if (ip) {
+        $config.deviceBaseUrl = `http://${ip}`
+        goto("/configure")
+      }
     }
   }
 </script>
