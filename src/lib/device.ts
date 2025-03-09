@@ -3,7 +3,9 @@ import type { ConfigState } from "./state"
 
 async function setConfig(baseUrl: string, name: string, value: string) {
   const resp = await fetch(`${baseUrl}/text/${name}/set?value=${encodeURIComponent(value)}`, {
-    method: "post"
+    method: "post",
+    // @ts-ignore
+    targetAddressSpace: "private"
   })
   
   if (!resp.ok) {
