@@ -20,7 +20,7 @@
 </script>
 
 <VerticalButtons>
-  <h1>Countdown Display Configurator</h1>
+  <h1>Transit Tracker Configurator</h1>
 
   <a href="/flash">
     <strong>Set up device →</strong><br>

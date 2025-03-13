@@ -115,4 +115,38 @@
 	button:not(:disabled):hover {
 		background-color: #45a049;
 	}
+
+  @media (prefers-color-scheme: dark) {
+    .styles {
+      border-color: #555;
+      background-color: #333;
+    }
+
+    .style select,
+    .style input {
+      background-color: #444;
+      color: white;
+      border-color: #555;
+    }
+
+    .style button {
+      background-color: #ff4c4c;
+    }
+
+    .style button:hover {
+      background-color: #ff3333 !important;
+    }
+
+    button {
+      background-color: #45a049;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    button:disabled {
+      background-color: #555;
+    }
+  }
 </style>

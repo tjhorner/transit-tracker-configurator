@@ -54,4 +54,23 @@
     border: none;
     border-top: 1px solid #ccc;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .btns :global(a), .btns :global(button) {
+      background: #333;
+      color: white;
+    }
+
+    .btns :global(a):hover, .btns :global(button):hover {
+      background: #444;
+    }
+
+    .btns :global(a):active, .btns :global(button):active {
+      background: #555;
+    }
+
+    .btns :global(hr) {
+      border-top-color: #555;
+    }
+  }
 </style>

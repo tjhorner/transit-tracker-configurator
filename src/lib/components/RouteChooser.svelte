@@ -106,6 +106,7 @@
   .container {
     max-height: 400px;
     overflow-y: auto;
+    color: black;
   }
 
   .route {

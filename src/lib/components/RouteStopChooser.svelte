@@ -64,7 +64,7 @@
 
       <p>
         Find the stop you are interested in on the map then select the routes
-        you want to track on your countdown clock.
+        you want to track on your Transit Tracker.
       </p>
 
       <p>
@@ -280,5 +280,16 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background: #333;
+      color: white;
+    }
+
+    .controls button {
+      background: #0056b3;
+    }
   }
 </style>

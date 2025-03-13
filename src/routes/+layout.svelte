@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-  <title>Countdown Display Configurator</title>
+  <title>Transit Tracker Configurator</title>
 </svelte:head>
 
 <div class="container">
