@@ -25,19 +25,40 @@ async function getConfig(baseUrl: string, name: string): Promise<string> {
 
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await navigator.serial.requestPort()
-  await port.open({ baudRate: 115200 })
-
-  const improv = new ImprovSerial(port, console)
-  await improv.initialize()
-
-  if (!improv.nextUrl) {
-    throw new Error("Device did not report URL")
+  
+  try {
+    await port.open({ baudRate: 115200 })
+  } catch(e: any) {
+    if (e.message.includes("already open")) {
+      await port.close()
+      await port.open({ baudRate: 115200 })
+    }
   }
 
-  await improv.close()
+  const improv = new ImprovSerial(port, console)
+
+  let retries = 0
+  while (retries <= 3) {
+    try {
+      await improv.initialize()
+
+      if (!improv.nextUrl) {
+        throw new Error("Device did not report URL")
+      }
+
+      await improv.close()
+    } catch(e: any) {
+      console.warn(e)
+      retries++
+      if (retries > 3) {
+        throw e
+      }
+    }
+  }
+
   await port.close()
 
-  return improv.nextUrl
+  return improv.nextUrl!
 }
 
 export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {

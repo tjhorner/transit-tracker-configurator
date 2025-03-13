@@ -25,7 +25,7 @@
 
   <a href="/flash">
     <strong>Prepare new device →</strong><br>
-    I am following Eastside Urbanism's build guide and want to flash the firmware.
+    I am following the Transit Tracker build guide and want to flash the firmware.
   </a>
 
   <button onclick={saveDeviceBaseUrl}>
