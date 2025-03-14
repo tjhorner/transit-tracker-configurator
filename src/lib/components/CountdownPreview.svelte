@@ -5,9 +5,10 @@
   interface Props {
     feed: string
     routes: RouteAtStop[]
+    timeOffsets: Record<string, number>
   }
 
-  let { feed, routes }: Props = $props()
+  let { feed, routes, timeOffsets }: Props = $props()
 
   interface TripDto {
     tripId: string
@@ -18,15 +19,34 @@
     headsign: string
     arrivalTime: number
     departureTime: number
-    countdownText: string
     isRealtime: boolean
   }
 
   let trips: TripDto[] = $state([])
 
+  function getCountdownText(trip: TripDto) {
+    const now = new Date()
+    const offset = timeOffsets[trip.stopId] ?? 0
+    const diff = new Date(trip.arrivalTime * 1000).getTime() - now.getTime() + (offset * -60000)
+
+    const hours = Math.floor(diff / 3600000)
+    const minutes = Math.floor(diff / 60000)
+    const seconds = Math.floor(diff / 1000)
+
+    if (hours > 0) {
+      return `${hours}h${minutes % 60}m`
+    }
+
+    if (minutes === 0 && seconds <= 30) {
+      return "Now"
+    }
+
+    return `${minutes}min`
+  }
+
   async function getTrips() {
     const pairs = routes.map((r) => `${r.routeId},${r.stopId}`).join(";")
-    const response = await fetch(`${apiBaseUrl}/schedule/${feed}/${pairs}`)
+    const response = await fetch(`${apiBaseUrl}/schedule/${feed}/${pairs}?limit=10`)
     trips = (await response.json()).trips
   }
 
@@ -44,7 +64,7 @@
         <tr>
           <td><strong>{trip.routeName}</strong></td>
           <td>{trip.headsign}</td>
-          <td style="text-align: right">{trip.countdownText}</td>
+          <td style="text-align: right">{getCountdownText(trip)}</td>
         </tr>
       {/each}
     </tbody>

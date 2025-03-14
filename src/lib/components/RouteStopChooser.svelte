@@ -71,7 +71,7 @@
         You can also optionally set a travel time for each stop; this will adjust the
         countdown time to account for the time it takes for you to get to the stop.
         For example, if it takes you 5 minutes to walk to a stop, set the travel
-        time to 5 minutes. (This does not currently affect the preview.)
+        time to 5 minutes.
       </p>
 
       <p>
@@ -125,7 +125,7 @@
         <div>
           <h2>Countdown Preview</h2>
           <div class="card">
-            <CountdownPreview feed={feed.code} routes={selected} />
+            <CountdownPreview feed={feed.code} routes={selected} timeOffsets={timeOffsets} />
           </div>
         </div>
       {/if}
