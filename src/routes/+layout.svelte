@@ -1,22 +1,22 @@
 <script>
-  import "../app.css"
+	import "../app.css"
 	let { children } = $props()
 </script>
 
 <svelte:head>
-  <title>Transit Tracker Configurator</title>
+	<title>Transit Tracker Configurator</title>
 </svelte:head>
 
 <div class="container">
-  {@render children()}
+	{@render children()}
 </div>
 
 <style>
-  .container {
-    display: flex;
-    justify-content: safe center;
-    align-items: safe center;
-    height: 100%;
-    width: 100%;
-  }
+	.container {
+		display: flex;
+		justify-content: safe center;
+		align-items: safe center;
+		height: 100%;
+		width: 100%;
+	}
 </style>
