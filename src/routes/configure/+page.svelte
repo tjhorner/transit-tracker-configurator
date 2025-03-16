@@ -21,10 +21,6 @@
     $config.deviceBaseUrl = url
     showConnectDialog = false
   }
-
-  onMount(() => {
-    console.log("ok")
-  })
 </script>
 
 <Dialog.Root bind:open={showConnectDialog}>
