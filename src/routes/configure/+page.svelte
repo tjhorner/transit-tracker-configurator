@@ -6,12 +6,12 @@
   import * as Card from "$lib/components/ui/card"
   import { Separator } from "$lib/components/ui/separator"
   import * as Tabs from "$lib/components/ui/tabs"
-  import { getDeviceBaseUrl } from "$lib/device"
   import { config } from "$lib/state"
   import * as Dialog from "$lib/components/ui/dialog"
-  import { ArrowLeft, Cable, Cog, FileCode, Paintbrush, Route, Unplug } from "@lucide/svelte"
+  import { Cable, Cog, Paintbrush, Route, Unplug } from "@lucide/svelte"
   import ConnectDialog from "$lib/components/configuration/ConnectDialog.svelte"
   import TopNav from "$lib/components/TopNav.svelte"
+  import { onMount } from "svelte"
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
@@ -21,6 +21,10 @@
     $config.deviceBaseUrl = url
     showConnectDialog = false
   }
+
+  onMount(() => {
+    console.log("ok")
+  })
 </script>
 
 <Dialog.Root bind:open={showConnectDialog}>
