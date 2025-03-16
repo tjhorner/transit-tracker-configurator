@@ -1,42 +1,89 @@
 <script lang="ts">
-	import { goto } from "$app/navigation"
-	import VerticalButtons from "$lib/components/ui/VerticalButtons.svelte"
-	import { getDeviceBaseUrl } from "$lib/device"
-	import { config } from "$lib/state"
+  import { goto } from "$app/navigation"
+  import * as Card from "$lib/components/ui/card"
+  import { CircleFadingArrowUp, WandSparkles, Wifi, Wrench } from "@lucide/svelte"
+  import * as Dialog from "$lib/components/ui/dialog"
 
-	async function saveDeviceBaseUrl() {
-		try {
-			const baseUrl = await getDeviceBaseUrl()
-			$config.deviceBaseUrl = baseUrl
-			goto("/configure")
-		} catch (e: any) {
-			console.error(e)
-			const ip = prompt(
-				`Failed to connect to device via USB. Please enter its IP address manually.\n\n(Error: ${e.message})`
-			)
-			if (ip) {
-				$config.deviceBaseUrl = `http://${ip}`
-				goto("/configure")
-			}
-		}
-	}
+  const browserSupportsWebSerial = "serial" in navigator
+
+  let showUnsupportedBrowserDialog = $state(false)
+
+  function goToWebSerialRequired(path: string) {
+    if (browserSupportsWebSerial) {
+      goto(path)
+    } else {
+      showUnsupportedBrowserDialog = true
+    }
+  }
 </script>
 
-<VerticalButtons>
-	<h1>Welcome!</h1>
+<Card.Root>
+  <Card.Header>
+    <Card.Title>Transit Tracker Configurator</Card.Title>
+    <Card.Description>Welcome! What would you like to do?</Card.Description>
+  </Card.Header>
+  <Card.Content class="grid grid-cols-2 gap-4">
+    <Card.Root
+      class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      onclick={() => goToWebSerialRequired("/setup")}
+    >
+      <Card.Header class="p-4 text-center">
+        <WandSparkles class="mx-auto my-1" size={32} />
+        <Card.Title>Initial setup</Card.Title>
+        <Card.Description>Set up a new Transit Tracker</Card.Description>
+      </Card.Header>
+    </Card.Root>
 
-	<a href="/flash">
-		<strong>Prepare new device →</strong><br />
-		I am following the Transit Tracker build guide and want to flash the firmware.
-	</a>
+    <Card.Root
+      class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      onclick={() => alert("Coming soon!")}
+    >
+      <Card.Header class="p-4 text-center">
+        <CircleFadingArrowUp class="mx-auto my-1" size={32} />
+        <Card.Title>Update firmware</Card.Title>
+        <Card.Description>Install the latest firmware</Card.Description>
+      </Card.Header>
+    </Card.Root>
 
-	<button onclick={saveDeviceBaseUrl}>
-		<strong>Configure existing device →</strong><br />
-		I have an existing Transit Tracker and want to configure it.
-	</button>
+    <Card.Root
+      class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      onclick={() => goToWebSerialRequired("/wifi")}
+    >
+      <Card.Header class="p-4 text-center">
+        <Wifi class="mx-auto my-1" size={32} />
+        <Card.Title>Change Wi-Fi</Card.Title>
+        <Card.Description>Connect to a different Wi-Fi network</Card.Description>
+      </Card.Header>
+    </Card.Root>
 
-	<a href="/configure">
-		<strong>Advanced mode →</strong><br />
-		I am an advanced user and want to generate YAML config.
-	</a>
-</VerticalButtons>
+    <Card.Root
+      class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      onclick={() => goto("/configure")}
+    >
+      <Card.Header class="p-4 text-center">
+        <Wrench class="mx-auto my-1" size={32} />
+        <Card.Title>Configure</Card.Title>
+        <Card.Description>Change routes and customizations</Card.Description>
+      </Card.Header>
+    </Card.Root>
+  </Card.Content>
+</Card.Root>
+
+<Dialog.Root
+  open={showUnsupportedBrowserDialog}
+  onOpenChange={() => (showUnsupportedBrowserDialog = false)}
+>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Unsupported browser</Dialog.Title>
+      <p class="leading-6">
+        Setup is only supported on Chromium-based browsers since Firefox and Safari do not support
+        Web Serial which is required to connect to your Transit Tracker.
+      </p>
+
+      <p class="leading-6">
+        Please download a Chromium-based browser like Google Chrome or Microsoft Edge to continue.
+      </p>
+    </Dialog.Header>
+  </Dialog.Content>
+</Dialog.Root>
