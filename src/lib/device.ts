@@ -47,13 +47,23 @@ interface SetConfigResult {
   name: string
 }
 
-async function setConfig(baseUrl: string, name: string, value: string, domain: string = "text"): Promise<SetConfigResult> {
-  const resp = await fetch(`${baseUrl}/${domain}/${name}/set?value=${encodeURIComponent(value)}`, {
+async function postDevice(baseUrl: string, path: string): Promise<Response> {
+  const resp = await fetch(`${baseUrl}${path}`, {
     method: "post",
     // @ts-ignore
     targetAddressSpace: "private"
   })
 
+  return resp
+}
+
+async function setTextConfig(baseUrl: string, name: string, value: string): Promise<SetConfigResult> {
+  const resp = await postDevice(baseUrl, `/text/${name}/set?value=${encodeURIComponent(value)}`)
+  return { ok: resp.ok, name }
+}
+
+async function setSelectConfig(baseUrl: string, name: string, value: string): Promise<SetConfigResult> {
+  const resp = await postDevice(baseUrl, `/select/${name}/set?option=${encodeURIComponent(value)}`)
   return { ok: resp.ok, name }
 }
 
@@ -68,11 +78,11 @@ async function getConfig(baseUrl: string, name: string): Promise<string> {
 }
 
 function* configRequestGenerator(baseUrl: string, config: ConfigState) {
-  yield setConfig(baseUrl, "base_url_config", config.apiBaseUrl)
+  yield setTextConfig(baseUrl, "base_url_config", config.apiBaseUrl)
 
-  yield setConfig(baseUrl, "feed_code_config", config.feed!.code)
+  yield setTextConfig(baseUrl, "feed_code_config", config.feed!.code)
 
-  yield setConfig(
+  yield setTextConfig(
     baseUrl,
     "schedule_config",
     config.routes
@@ -83,7 +93,7 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join(";")
   )
 
-  yield setConfig(
+  yield setTextConfig(
     baseUrl,
     "abbreviations_config",
     config.abbreviations
@@ -93,7 +103,7 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join("\n")
   )
 
-  yield setConfig(
+  yield setTextConfig(
     baseUrl,
     "route_styles_config",
     config.routeStyles
@@ -103,18 +113,16 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join("\n")
   )
 
-  yield setConfig(
+  yield setSelectConfig(
     baseUrl,
     "time_display_config",
-    config.timeDisplay,
-    "select"
+    config.timeDisplay
   )
 
-  yield setConfig(
+  yield setSelectConfig(
     baseUrl,
     "list_mode_config",
-    config.listMode,
-    "select"
+    config.listMode
   )
 }
 
