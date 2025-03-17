@@ -11,8 +11,7 @@
   import { Cable, Cog, Paintbrush, Route, Unplug } from "@lucide/svelte"
   import ConnectDialog from "$lib/components/configuration/ConnectDialog.svelte"
   import TopNav from "$lib/components/TopNav.svelte"
-  import { onMount } from "svelte"
-
+  
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
   let showConnectDialog = $state(false)

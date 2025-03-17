@@ -20,8 +20,6 @@
   function saveRoutes(routes: RouteAtStop[], timeOffsets: Record<string, number>) {
     $config.routes = routes
     $config.stopTimeOffsets = timeOffsets
-    $config.abbreviations = []
-    $config.routeStyles = []
     showRouteEditor = false
   }
 
@@ -29,6 +27,8 @@
     const feed = feeds.find((f) => f.code === feedCode)
     $config.routes = []
     $config.stopTimeOffsets = {}
+    $config.abbreviations = []
+    $config.routeStyles = []
     $config.feed = feed
   }
 

@@ -13,7 +13,6 @@
     try {
       const results = await pushConfigToDevice($config, $config.deviceBaseUrl!)
 
-      console.log(results)
       const errors = results.filter(result => !result.ok)
       if (errors.length > 0) {
         toast.warning("Unable to push full config", {
