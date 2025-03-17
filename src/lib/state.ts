@@ -49,6 +49,11 @@ function createPersistentStore<T>(key: string, initialValue: T) {
     const storedValue = localStorage.getItem(key)
     if (storedValue !== null) {
       currentValue = JSON.parse(storedValue) as T
+      for (const key in initialValue) {
+        if (currentValue[key] === undefined) {
+          currentValue[key] = initialValue[key]
+        }
+      }
     }
   } catch (error) {
     console.error(`Error parsing JSON from localStorage key "${key}":`, error)
