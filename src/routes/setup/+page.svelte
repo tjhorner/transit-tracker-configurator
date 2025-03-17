@@ -41,7 +41,7 @@
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="firmware">
-        <FirmwareFlasher onSuccess={() => (firmwareFlashSuccess = true)} />
+        <FirmwareFlasher eraseFlash={true} onSuccess={() => (firmwareFlashSuccess = true)} />
 
         {#if firmwareFlashSuccess}
           <Button class="mt-4 w-full" variant="secondary" onclick={() => (step = "wifi")}>

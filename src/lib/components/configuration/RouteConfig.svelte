@@ -92,7 +92,7 @@
   </Button>
 </div>
 
-<!-- <div class="mb-5">
+<div class="mb-5">
   <h4 class="mb-2 scroll-m-20 text-xl font-semibold tracking-tight">Time Display</h4>
 
   <RadioGroup.Root bind:value={$config.timeDisplay}>
@@ -120,4 +120,4 @@
       <Label for="nextPerRoute">Show only the next {$config.timeDisplay} for each route</Label>
     </div>
   </RadioGroup.Root>
-</div> -->
+</div>

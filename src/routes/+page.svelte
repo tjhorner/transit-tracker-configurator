@@ -36,7 +36,7 @@
 
     <Card.Root
       class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
-      onclick={() => alert("Coming soon!")}
+      onclick={() => goToWebSerialRequired("/update")}
     >
       <Card.Header class="p-4 text-center">
         <CircleFadingArrowUp class="mx-auto my-1" size={32} />

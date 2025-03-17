@@ -7,10 +7,14 @@
   import * as Dialog from "$lib/components/ui/dialog"
 
   interface Props {
+    eraseFlash?: boolean
     onSuccess: () => void
   }
 
-  let { onSuccess }: Props = $props()
+  let {
+    eraseFlash = false,
+    onSuccess
+  }: Props = $props()
 
   let flashing = $state(false)
   let progress = $state(0)
@@ -47,8 +51,10 @@
 
       await esploader.main()
 
-      statusMessage = "Erasing flash..."
-      await esploader.eraseFlash()
+      if (eraseFlash) {
+        statusMessage = "Erasing flash..."
+        await esploader.eraseFlash()
+      }
 
       statusMessage = "Downloading firmware..."
 

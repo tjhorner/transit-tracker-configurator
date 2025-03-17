@@ -2,28 +2,6 @@ import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import type { ConfigState } from "./state"
 import { getSerialPort } from "./utils"
 
-async function setConfig(baseUrl: string, name: string, value: string) {
-  const resp = await fetch(`${baseUrl}/text/${name}/set?value=${encodeURIComponent(value)}`, {
-    method: "post",
-    // @ts-ignore
-    targetAddressSpace: "private"
-  })
-
-  if (!resp.ok) {
-    throw new Error(`Failed to set config value ${name} on device ${baseUrl}`)
-  }
-}
-
-async function getConfig(baseUrl: string, name: string): Promise<string> {
-  const resp = await fetch(`${baseUrl}/text/${name}`)
-  if (!resp.ok) {
-    throw new Error(`Failed to get config value ${name} from device ${baseUrl}`)
-  }
-
-  const value = await resp.json()
-  return value.value
-}
-
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await getSerialPort()
 
@@ -64,13 +42,38 @@ export async function getDeviceBaseUrl(): Promise<string> {
   return improv.nextUrl!
 }
 
-export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {
-  await setConfig(deviceBaseUrl, "base_url_config", config.apiBaseUrl)
+interface SetConfigResult {
+  ok: boolean
+  name: string
+}
 
-  await setConfig(deviceBaseUrl, "feed_code_config", config.feed!.code)
+async function setConfig(baseUrl: string, name: string, value: string, domain: string = "text"): Promise<SetConfigResult> {
+  const resp = await fetch(`${baseUrl}/${domain}/${name}/set?value=${encodeURIComponent(value)}`, {
+    method: "post",
+    // @ts-ignore
+    targetAddressSpace: "private"
+  })
 
-  await setConfig(
-    deviceBaseUrl,
+  return { ok: resp.ok, name }
+}
+
+async function getConfig(baseUrl: string, name: string): Promise<string> {
+  const resp = await fetch(`${baseUrl}/text/${name}`)
+  if (!resp.ok) {
+    throw new Error(`Failed to get config value ${name} from device ${baseUrl}`)
+  }
+
+  const value = await resp.json()
+  return value.value
+}
+
+function* configRequestGenerator(baseUrl: string, config: ConfigState) {
+  yield setConfig(baseUrl, "base_url_config", config.apiBaseUrl)
+
+  yield setConfig(baseUrl, "feed_code_config", config.feed!.code)
+
+  yield setConfig(
+    baseUrl,
     "schedule_config",
     config.routes
       .map((route) => {
@@ -80,8 +83,8 @@ export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: str
       .join(";")
   )
 
-  await setConfig(
-    deviceBaseUrl,
+  yield setConfig(
+    baseUrl,
     "abbreviations_config",
     config.abbreviations
       .map((abbr) => {
@@ -90,8 +93,8 @@ export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: str
       .join("\n")
   )
 
-  await setConfig(
-    deviceBaseUrl,
+  yield setConfig(
+    baseUrl,
     "route_styles_config",
     config.routeStyles
       .map((style) => {
@@ -100,9 +103,41 @@ export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: str
       .join("\n")
   )
 
+  yield setConfig(
+    baseUrl,
+    "time_display_config",
+    config.timeDisplay,
+    "select"
+  )
+
+  yield setConfig(
+    baseUrl,
+    "list_mode_config",
+    config.listMode,
+    "select"
+  )
+}
+
+export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {
+  const results = []
+
+  const configRequests = configRequestGenerator(deviceBaseUrl, config)
+  for (const request of configRequests) {
+    const result = await request
+    results.push(result)
+  }
+
+  await fetch(`${deviceBaseUrl}/button/write_preferences/press`, {
+    method: "post",
+    // @ts-ignore
+    targetAddressSpace: "private"
+  })
+
   await fetch(`${deviceBaseUrl}/button/reload_tracker/press`, {
     method: "post",
     // @ts-ignore
     targetAddressSpace: "private"
   })
+
+  return results
 }

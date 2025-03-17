@@ -4,14 +4,31 @@
   import { toast } from "svelte-sonner"
   import { Button } from "../ui/button"
   import { LoaderCircle, Upload } from "@lucide/svelte"
+  import { goto } from "$app/navigation"
 
   let pushing = $state(false)
 
   async function pushConfig() {
     pushing = true
     try {
-      await pushConfigToDevice($config, $config.deviceBaseUrl!)
-      toast.success("Configuration updated on device")
+      const results = await pushConfigToDevice($config, $config.deviceBaseUrl!)
+
+      console.log(results)
+      const errors = results.filter(result => !result.ok)
+      if (errors.length > 0) {
+        toast.warning("Unable to push full config", {
+          description: "Your Transit Tracker may need a firmware update.",
+          duration: 10000,
+          action: {
+            label: "Update Firmware",
+            onClick() {
+              goto("/update")
+            }
+          }
+        })
+      } else {
+        toast.success("Configuration pushed successfully")
+      }
     } catch (e: any) {
       console.error(e)
       toast.error("Failed to push config", {
