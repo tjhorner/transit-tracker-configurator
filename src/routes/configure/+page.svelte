@@ -11,7 +11,7 @@
   import { Cable, Cog, Paintbrush, Route, Unplug } from "@lucide/svelte"
   import ConnectDialog from "$lib/components/configuration/ConnectDialog.svelte"
   import TopNav from "$lib/components/TopNav.svelte"
-  
+
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
   let showConnectDialog = $state(false)
@@ -39,11 +39,17 @@
 <TopNav>
   <div class="flex items-center gap-1 text-sm text-muted-foreground">
     {#if $config.deviceBaseUrl}
-      Connected: <span class="font-mono">{connectedIp}</span>
+      Connected:
+      <Button
+        variant="link"
+        target="_blank"
+        size="small"
+        href={$config.deviceBaseUrl}>{connectedIp}</Button
+      >
       <Button
         variant="link"
         size="small"
-        class="ml-4"
+        class="ml-4 hover:text-red-500"
         onclick={() => ($config.deviceBaseUrl = undefined)}>Disconnect</Button
       >
     {:else}
