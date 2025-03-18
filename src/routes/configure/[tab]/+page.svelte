@@ -102,13 +102,11 @@
       </Tabs.List>
 
       <Tabs.Content value="routes">
-        <!-- silly thing to get around terrible state model (sorry) -->
-        {#if page.params.tab === "routes"}
-          <RouteConfig />
-        {/if}
+        <RouteConfig />
       </Tabs.Content>
 
       <Tabs.Content value="customize">
+        <!-- silly thing to get around terrible state model (sorry) -->
         {#if page.params.tab === "customize"}
           <CustomizeConfig />
         {/if}
