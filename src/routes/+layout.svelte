@@ -13,8 +13,8 @@
 <ModeWatcher />
 <Toaster position="bottom-center" />
 
-<div class="layout-container pt-12">
-  <div>
+<div class="layout-container">
+  <div class="py-12">
     {@render children()}
   </div>
 </div>
@@ -24,7 +24,7 @@
     display: flex;
     flex-direction: column;
     /* justify-content: safe center; */
-    align-items: safe center;
+    align-items: center;
     height: 100%;
     width: 100%;
   }
