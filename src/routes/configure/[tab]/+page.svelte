@@ -12,10 +12,11 @@
   import ConnectDialog from "$lib/components/configuration/ConnectDialog.svelte"
   import TopNav from "$lib/components/TopNav.svelte"
   import GenerateYamlDialog from "$lib/components/configuration/GenerateYamlDialog.svelte"
+  import { page } from "$app/state"
+  import { goto } from "$app/navigation"
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
-  let tab = $state("routes")
   let showConnectDialog = $state(false)
   let showYamlDialog = $state(false)
 
@@ -84,7 +85,7 @@
     <Card.Description>Change how your Transit Tracker looks and acts.</Card.Description>
   </Card.Header>
   <Card.Content>
-    <Tabs.Root bind:value={tab}>
+    <Tabs.Root value={page.params.tab} onValueChange={(value) => goto(`./${value}`)}>
       <Tabs.List class="mb-4 grid w-full grid-cols-3">
         <Tabs.Trigger value="routes">
           <Route size={16} class="mr-1" />
@@ -102,13 +103,13 @@
 
       <Tabs.Content value="routes">
         <!-- silly thing to get around terrible state model (sorry) -->
-        {#if tab === "routes"}
+        {#if page.params.tab === "routes"}
           <RouteConfig />
         {/if}
       </Tabs.Content>
 
       <Tabs.Content value="customize">
-        {#if tab === "customize"}
+        {#if page.params.tab === "customize"}
           <CustomizeConfig />
         {/if}
       </Tabs.Content>
