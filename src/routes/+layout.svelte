@@ -24,7 +24,7 @@
     display: flex;
     flex-direction: column;
     /* justify-content: safe center; */
-    align-items: center;
+    align-items: safe center;
     height: 100%;
     width: 100%;
   }
