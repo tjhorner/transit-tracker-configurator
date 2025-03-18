@@ -57,12 +57,20 @@ async function postDevice(baseUrl: string, path: string): Promise<Response> {
   return resp
 }
 
-async function setTextConfig(baseUrl: string, name: string, value: string): Promise<SetConfigResult> {
+async function setTextConfig(
+  baseUrl: string,
+  name: string,
+  value: string
+): Promise<SetConfigResult> {
   const resp = await postDevice(baseUrl, `/text/${name}/set?value=${encodeURIComponent(value)}`)
   return { ok: resp.ok, name }
 }
 
-async function setSelectConfig(baseUrl: string, name: string, value: string): Promise<SetConfigResult> {
+async function setSelectConfig(
+  baseUrl: string,
+  name: string,
+  value: string
+): Promise<SetConfigResult> {
   const resp = await postDevice(baseUrl, `/select/${name}/set?option=${encodeURIComponent(value)}`)
   return { ok: resp.ok, name }
 }
@@ -113,17 +121,9 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join("\n")
   )
 
-  yield setSelectConfig(
-    baseUrl,
-    "time_display_config",
-    config.timeDisplay
-  )
+  yield setSelectConfig(baseUrl, "time_display_config", config.timeDisplay)
 
-  yield setSelectConfig(
-    baseUrl,
-    "list_mode_config",
-    config.listMode
-  )
+  yield setSelectConfig(baseUrl, "list_mode_config", config.listMode)
 }
 
 export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {

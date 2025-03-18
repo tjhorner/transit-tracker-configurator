@@ -20,8 +20,8 @@
   function saveRoutes(routes: RouteAtStop[], timeOffsets: Record<string, number>) {
     $config.routes = routes
     $config.stopTimeOffsets = timeOffsets
-    $config.routeStyles = $config.routeStyles.filter(
-      (style) => routes.some((route) => route.routeId === style.routeId)
+    $config.routeStyles = $config.routeStyles.filter((style) =>
+      routes.some((route) => route.routeId === style.routeId)
     )
     showRouteEditor = false
   }

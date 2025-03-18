@@ -8,14 +8,16 @@
   import * as Tabs from "$lib/components/ui/tabs"
   import { config } from "$lib/state"
   import * as Dialog from "$lib/components/ui/dialog"
-  import { Cable, Cog, Paintbrush, Route, Unplug } from "@lucide/svelte"
+  import { Cable, Cog, FileCode, Paintbrush, Route, Unplug } from "@lucide/svelte"
   import ConnectDialog from "$lib/components/configuration/ConnectDialog.svelte"
   import TopNav from "$lib/components/TopNav.svelte"
+  import GenerateYamlDialog from "$lib/components/configuration/GenerateYamlDialog.svelte"
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
   let tab = $state("routes")
   let showConnectDialog = $state(false)
+  let showYamlDialog = $state(false)
 
   function setBaseUrl(url: string) {
     $config.deviceBaseUrl = url
@@ -37,15 +39,31 @@
   </Dialog.Content>
 </Dialog.Root>
 
+<Dialog.Root bind:open={showYamlDialog}>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Generate YAML</Dialog.Title>
+      <Dialog.Description>
+        You can use this YAML with the
+        <Button
+          variant="link"
+          size="small"
+          href="https://transit-tracker.eastsideurbanism.org/docs/advanced/esphome-component"
+          target="_blank">Transit Tracker ESPHome component</Button
+        >.
+      </Dialog.Description>
+    </Dialog.Header>
+
+    <GenerateYamlDialog />
+  </Dialog.Content>
+</Dialog.Root>
+
 <TopNav>
   <div class="flex items-center gap-1 text-sm text-muted-foreground">
     {#if $config.deviceBaseUrl}
       Connected:
-      <Button
-        variant="link"
-        target="_blank"
-        size="small"
-        href={$config.deviceBaseUrl}>{connectedIp}</Button
+      <Button variant="link" target="_blank" size="small" href={$config.deviceBaseUrl}
+        >{connectedIp}</Button
       >
       <Button
         variant="link"
@@ -113,9 +131,9 @@
         {/if}
       </div>
 
-      <!-- <Button class="flex-grow" variant="secondary">
+      <Button class="flex-grow" variant="secondary" onclick={() => (showYamlDialog = true)}>
         <FileCode /> Generate YAML
-      </Button> -->
+      </Button>
     </div>
   </Card.Content>
 </Card.Root>

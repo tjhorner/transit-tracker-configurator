@@ -11,10 +11,7 @@
     onSuccess: () => void
   }
 
-  let {
-    eraseFlash = false,
-    onSuccess
-  }: Props = $props()
+  let { eraseFlash = false, onSuccess }: Props = $props()
 
   let flashing = $state(false)
   let progress = $state(0)
