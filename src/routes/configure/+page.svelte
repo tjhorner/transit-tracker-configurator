@@ -14,6 +14,7 @@
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
+  let tab = $state("routes")
   let showConnectDialog = $state(false)
 
   function setBaseUrl(url: string) {
@@ -65,7 +66,7 @@
     <Card.Description>Change how your Transit Tracker looks and acts.</Card.Description>
   </Card.Header>
   <Card.Content>
-    <Tabs.Root value="routes">
+    <Tabs.Root bind:value={tab}>
       <Tabs.List class="mb-4 grid w-full grid-cols-3">
         <Tabs.Trigger value="routes">
           <Route size={16} class="mr-1" />
@@ -82,11 +83,16 @@
       </Tabs.List>
 
       <Tabs.Content value="routes">
-        <RouteConfig />
+        <!-- silly thing to get around terrible state model (sorry) -->
+        {#if tab === "routes"}
+          <RouteConfig />
+        {/if}
       </Tabs.Content>
 
       <Tabs.Content value="customize">
-        <CustomizeConfig />
+        {#if tab === "customize"}
+          <CustomizeConfig />
+        {/if}
       </Tabs.Content>
 
       <Tabs.Content value="advanced">
