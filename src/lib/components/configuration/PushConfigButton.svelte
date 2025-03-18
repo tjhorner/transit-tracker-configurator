@@ -29,6 +29,14 @@
         toast.success("Configuration pushed successfully")
       }
     } catch (e: any) {
+      if (e.name === "ConfigValidationError") {
+        toast.error("Validation failed", {
+          description: e.message,
+          duration: 10000,
+        })
+        return
+      }
+
       console.error(e)
       toast.error("Failed to push config", {
         description: `Make sure you are on the same network as the device.\n\n(Error: ${e.message})`,

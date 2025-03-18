@@ -47,6 +47,13 @@ interface SetConfigResult {
   name: string
 }
 
+class ConfigValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = "ConfigValidationError"
+  }
+}
+
 async function postDevice(baseUrl: string, path: string): Promise<Response> {
   const resp = await fetch(`${baseUrl}${path}`, {
     method: "post",
@@ -62,6 +69,10 @@ async function setTextConfig(
   name: string,
   value: string
 ): Promise<SetConfigResult> {
+  if (value.length > 255) {
+    throw new ConfigValidationError(`Value for ${name} is too long: ${value.length} > 255`)
+  }
+
   const resp = await postDevice(baseUrl, `/text/${name}/set?value=${encodeURIComponent(value)}`)
   return { ok: resp.ok, name }
 }
