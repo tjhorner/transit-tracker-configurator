@@ -41,7 +41,7 @@
     {@render cardLink("Initial setup", "Set up a new Transit Tracker", "/setup", WandSparkles, true)}
     {@render cardLink("Update firmware", "Install the latest firmware", "/update", CircleFadingArrowUp, true)}
     {@render cardLink("Change Wi-Fi", "Connect to a different Wi-Fi network", "/wifi", Wifi, true)}
-    {@render cardLink("Configure", "Change routes and customizations", "/configure", Wrench)}
+    {@render cardLink("Configure", "Change routes and customizations", "/configure/routes", Wrench)}
   </Card.Content>
 </Card.Root>
 
