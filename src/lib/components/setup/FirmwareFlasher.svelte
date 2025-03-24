@@ -8,10 +8,15 @@
 
   interface Props {
     eraseFlash?: boolean
+    bootButtonRequired?: boolean
     onSuccess: () => void
   }
 
-  let { eraseFlash = false, onSuccess }: Props = $props()
+  let {
+    eraseFlash = false,
+    bootButtonRequired = true,
+    onSuccess
+  }: Props = $props()
 
   let flashing = $state(false)
   let progress = $state(0)
@@ -147,6 +152,7 @@
       </p>
 
       <ul class="my-6 ml-6 list-disc [&>li]:mt-2">
+        {#if bootButtonRequired}
         <li>
           Make sure it's in flashing mode. To enter flashing mode:
           <ol class="ml-8 list-decimal">
@@ -155,6 +161,7 @@
             <li>Release the BOOT button.</li>
           </ol>
         </li>
+        {/if}
         <li>Make sure your USB cable can transfer data, not just power.</li>
         <li>It will probably show up as something like "USB JTAG/serial debug unit".</li>
       </ul>

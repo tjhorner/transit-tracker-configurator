@@ -16,6 +16,7 @@
   <Card.Content>
     <FirmwareFlasher
       eraseFlash={false}
+      bootButtonRequired={false}
       onSuccess={() => {
         toast.success("Firmware updated")
         goto("/")
