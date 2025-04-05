@@ -15,6 +15,8 @@
   </Card.Header>
   <Card.Content>
     <FirmwareFlasher
+      file="/firmware/firmware.bin"
+      offset={0x10000}
       eraseFlash={false}
       bootButtonRequired={false}
       onSuccess={() => {

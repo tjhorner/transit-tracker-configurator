@@ -6,7 +6,7 @@
   "builds": [
     {
       "chipFamily": "ESP32-S3",
-      "parts": [{ "path": "firmware.bin", "offset": 0 }]
+      "parts": [{ "path": "firmware.factory.bin", "offset": 0 }]
     }
   ]
 }

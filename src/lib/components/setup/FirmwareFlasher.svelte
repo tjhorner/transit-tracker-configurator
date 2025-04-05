@@ -7,12 +7,16 @@
   import * as Dialog from "$lib/components/ui/dialog"
 
   interface Props {
+    file?: string
+    offset?: number
     eraseFlash?: boolean
     bootButtonRequired?: boolean
     onSuccess: () => void
   }
 
   let {
+    file = "/firmware/firmware.factory.bin",
+    offset = 0,
     eraseFlash = false,
     bootButtonRequired = true,
     onSuccess
@@ -60,7 +64,7 @@
 
       statusMessage = "Downloading firmware..."
 
-      const resp = await fetch("/firmware/firmware.bin")
+      const resp = await fetch(file)
       const reader = new FileReader()
       const blob = await resp.blob()
 
@@ -74,7 +78,7 @@
       await esploader.writeFlash({
         fileArray: [
           {
-            address: 0x0,
+            address: offset,
             data: firmwareData
           }
         ],
