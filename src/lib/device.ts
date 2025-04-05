@@ -99,6 +99,8 @@ async function getConfig(baseUrl: string, name: string): Promise<string> {
 function* configRequestGenerator(baseUrl: string, config: ConfigState) {
   yield setTextConfig(baseUrl, "base_url_config", config.apiBaseUrl)
 
+  yield setTextConfig(baseUrl, "feed_code_config", "")
+
   yield setTextConfig(
     baseUrl,
     "schedule_config",
