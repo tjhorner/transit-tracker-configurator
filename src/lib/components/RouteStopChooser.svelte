@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DefaultMarker } from "svelte-maplibre"
+  import { DefaultMarker, FillLayer, GeoJSON, LineLayer } from "svelte-maplibre"
   import { MapLibre, type Map as MapLibreMap } from "svelte-maplibre"
   import RouteChooser from "./RouteChooser.svelte"
   import CountdownPreview from "./CountdownPreview.svelte"
@@ -13,6 +13,10 @@
   import { Label } from "$lib/components/ui/label"
   import { Input } from "./ui/input"
   import { mode as appearanceMode } from "mode-watcher"
+  import type { FeatureCollection } from "geojson"
+  import * as turf from "@turf/turf"
+  import { api } from "$lib/api"
+  import { onMount } from "svelte"
 
   interface Props {
     config: ConfigState
@@ -20,6 +24,11 @@
   }
 
   let { config, onsave }: Props = $props()
+
+  let serviceAreas: FeatureCollection = $state({
+    type: "FeatureCollection",
+    features: []
+  })
 
   let selected = $state(config.routes)
   let timeOffsets = $state(config.stopTimeOffsets)
@@ -33,6 +42,17 @@
   let needsZoomIn = $state(true)
 
   const selectionGroupedByStop = $derived(Map.groupBy(selected, (r) => r.stopId).values())
+
+  async function getServiceAreas() {
+    serviceAreas = await api.getServiceAreas()
+
+    const bbox = turf.bbox(serviceAreas)
+    map?.fitBounds(bbox as [number, number, number, number], {
+      animate: false,
+      padding: 20,
+      maxZoom: 15
+    })
+  }
 
   async function getStops(bounds: number[][]) {
     if (abortController) {
@@ -63,6 +83,10 @@
   }
 
   const onMapMoved = debounce(_onMapMoved, 1000)
+
+  onMount(() => {
+    getServiceAreas()
+  })
 </script>
 
 <div class="flex h-full w-full flex-col-reverse md:flex-row">
@@ -169,6 +193,23 @@
     onmoveend={onMapMoved}
     bounds={[-133.066406,18.812718,-59.809570,53.304621]}
   >
+    <GeoJSON id="service-areas" data={serviceAreas} maxzoom={15}>
+      <FillLayer
+        id="service-areas-fill"
+        paint={{
+          "fill-color": "#51c551",
+          "fill-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.5, 10, 0.5, 13, 0]
+        }} />
+
+      <LineLayer
+        id="service-areas-line"
+        paint={{
+          "line-color": "#51c551",
+          "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 1, 10, 0.8, 13, 0],
+          "line-width": 2
+        }} />
+    </GeoJSON>
+
     {#each stops as stop (stop.stopId)}
       <DefaultMarker lngLat={[stop.lon, stop.lat]} class="cursor-pointer">
         <RouteChooser

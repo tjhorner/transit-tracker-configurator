@@ -19,6 +19,7 @@
     "@sveltejs/kit": "^2.16.1",
     "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/geojson": "^7946.0.16",
     "@types/json-to-pretty-yaml": "^1.2.1",
     "@types/w3c-web-serial": "^1.0.7",
     "autoprefixer": "^10.4.20",
@@ -43,10 +44,12 @@
     "zod": "^3.24.2"
   },
   "dependencies": {
+    "@turf/turf": "^7.2.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "esp-web-tools": "^10.1.0",
     "esptool-js": "^0.5.4",
+    "geojson": "^0.5.0",
     "improv-wifi-serial-sdk": "^2.5.0",
     "json-to-pretty-yaml": "^1.2.2",
     "p-debounce": "^4.0.0",
