@@ -32,16 +32,40 @@ export interface Abbreviation {
 export interface ConfigState {
   apiBaseUrl: string
   deviceBaseUrl?: string
-  feed?: Feed
   routes: RouteAtStop[]
   routeStyles: RouteStyle[]
   abbreviations: Abbreviation[]
   stopTimeOffsets: Record<string, number>
   timeDisplay: "arrival" | "departure"
+  timeUnits: "long" | "short" | "none"
   listMode: "sequential" | "nextPerRoute"
 }
 
-function createPersistentStore<T>(key: string, initialValue: T) {
+function toGlobalId(feedCode: string, localId: string): string {
+  return `${feedCode}:${localId}`
+}
+
+function migrateFeedCodeToGlobalIds(config: ConfigState & { feed?: Feed }): ConfigState {
+  if (!config.feed) return config
+
+  const feedCode = config.feed.code
+  delete config.feed
+
+  return {
+    ...config,
+    routes: config.routes.map((route) => ({
+      ...route,
+      stopId: toGlobalId(feedCode, route.stopId),
+      routeId: toGlobalId(feedCode, route.routeId),
+    })),
+    routeStyles: config.routeStyles.map((style) => ({
+      ...style,
+      routeId: toGlobalId(feedCode, style.routeId),
+    })),
+  }
+}
+
+function createPersistentStore<T>(key: string, initialValue: T, migrate?: (value: T) => T) {
   let currentValue: T = initialValue
 
   // Attempt to retrieve existing value from localStorage
@@ -58,6 +82,8 @@ function createPersistentStore<T>(key: string, initialValue: T) {
   } catch (error) {
     console.error(`Error parsing JSON from localStorage key "${key}":`, error)
   }
+
+  migrate && (currentValue = migrate(currentValue))
 
   // Create a Svelte writable store with the (possibly) retrieved value
   const store = writable<T>(currentValue)
@@ -84,5 +110,6 @@ export const config = createPersistentStore<ConfigState>("config", {
   abbreviations: [],
   stopTimeOffsets: {},
   timeDisplay: "arrival",
+  timeUnits: "long",
   listMode: "sequential"
-})
+}, migrateFeedCodeToGlobalIds)

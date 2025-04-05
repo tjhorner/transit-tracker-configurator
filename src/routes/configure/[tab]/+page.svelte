@@ -14,10 +14,12 @@
   import GenerateYamlDialog from "$lib/components/configuration/GenerateYamlDialog.svelte"
   import { page } from "$app/state"
   import { goto } from "$app/navigation"
+  import LogsDialog from "$lib/components/configuration/LogsDialog.svelte"
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
   let showConnectDialog = $state(false)
+  let showLogsDialog = $state(false)
   let showYamlDialog = $state(false)
 
   function setBaseUrl(url: string) {
@@ -37,6 +39,18 @@
     </Dialog.Header>
 
     <ConnectDialog onSuccess={setBaseUrl} />
+  </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={showLogsDialog}>
+  <Dialog.Content class="max-w-7xl max-h-full">
+    <Dialog.Header>
+      <Dialog.Title>Logs</Dialog.Title>
+    </Dialog.Header>
+
+    {#if showLogsDialog}
+      <LogsDialog />
+    {/if}
   </Dialog.Content>
 </Dialog.Root>
 

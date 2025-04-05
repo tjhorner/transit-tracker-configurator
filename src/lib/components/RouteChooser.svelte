@@ -6,7 +6,6 @@
 
   interface Props {
     stop: any
-    feed: string
     selected: RouteAtStop[]
     onRouteSelected: (route: RouteAtStop) => void
     onRouteDeselected: (route: RouteAtStop) => void
@@ -22,7 +21,6 @@
 
   const {
     stop,
-    feed,
     selected,
     onRouteSelected,
     onRouteDeselected,
@@ -33,7 +31,7 @@
   let shown = $state(false)
 
   async function getRoutes(stopId: string) {
-    const response = await fetch(`${apiBaseUrl}/stops/${feed}/${stopId}/routes`)
+    const response = await fetch(`${apiBaseUrl}/stops/${stopId}/routes`)
     return response.json()
   }
 
@@ -71,7 +69,10 @@
 <Popup bind:open={shown} closeOnMove popupClass="p-0">
   <div class="bg-background px-4 py-2 text-foreground">
     <h4 class="mb-2 scroll-m-20 text-lg font-semibold tracking-tight">
-      {stop.name} ({stop.stopCode})
+      {stop.name}
+      {#if stop.stopCode}
+        ({stop.stopCode})
+      {/if}
     </h4>
     {#if routes.length === 0}
       <Skeleton />

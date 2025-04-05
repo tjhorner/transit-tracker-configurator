@@ -27,7 +27,6 @@
   let stops: any[] = $state([])
   let abortController: AbortController | null = null
   let map: MapLibreMap | undefined = $state()
-  let feed = $derived(config.feed!)
 
   let mapStyle = $derived($appearanceMode === "dark" ? "dark-matter-gl" : "positron-gl")
 
@@ -42,7 +41,7 @@
 
     abortController = new AbortController()
     const response = await fetch(
-      `${apiBaseUrl}/stops/${config.feed!.code}/within/${bounds[0][1]}/${bounds[0][0]}/${bounds[1][1]}/${bounds[1][0]}`,
+      `${apiBaseUrl}/stops/within/${bounds[0][0]},${bounds[0][1]},${bounds[1][0]},${bounds[1][1]}`,
       { signal: abortController?.signal }
     )
 
@@ -92,7 +91,12 @@
     {#each selectionGroupedByStop as routes}
       <Card.Root class="mb-3">
         <Card.Header class="px-4 pb-2 pt-3">
-          <Card.Title class="text-lg">{routes[0].stopName} ({routes[0].stopCode})</Card.Title>
+          <Card.Title class="text-lg">
+            {routes[0].stopName}
+            {#if routes[0].stopCode}
+              ({routes[0].stopCode})
+            {/if}
+          </Card.Title>
         </Card.Header>
         <Card.Content class="p-4 pt-0">
           <div class="flex flex-col gap-2">
@@ -147,7 +151,7 @@
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">Countdown Preview</h3>
           <Card.Root>
             <Card.Content class="p-3">
-              <CountdownPreview feed={feed.code} routes={selected} {timeOffsets} />
+              <CountdownPreview routes={selected} {timeOffsets} />
             </Card.Content>
           </Card.Root>
         </div>
@@ -163,16 +167,12 @@
     standardControls
     class="h-full w-full"
     onmoveend={onMapMoved}
-    bounds={[
-      [feed.bounds[1], feed.bounds[0]],
-      [feed.bounds[3], feed.bounds[2]]
-    ]}
+    bounds={[-133.066406,18.812718,-59.809570,53.304621]}
   >
     {#each stops as stop (stop.stopId)}
       <DefaultMarker lngLat={[stop.lon, stop.lat]} class="cursor-pointer">
         <RouteChooser
           {stop}
-          feed={feed.code}
           {selected}
           {disabled}
           onRouteSelected={(route: RouteAtStop) => selected.push(route)}

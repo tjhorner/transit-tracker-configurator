@@ -1,3 +1,5 @@
+import { apiBaseUrl } from "./config"
+
 export interface Feed {
   code: string
   name: string
@@ -17,4 +19,4 @@ class TransitTrackerApi {
   }
 }
 
-export const api = new TransitTrackerApi("https://tt.horner.tj")
+export const api = new TransitTrackerApi(apiBaseUrl)

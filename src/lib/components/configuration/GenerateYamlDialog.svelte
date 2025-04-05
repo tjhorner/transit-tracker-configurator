@@ -23,8 +23,8 @@
         : {}),
       transit_tracker: {
         base_url: $config.apiBaseUrl,
-        feed_code: $config.feed?.code,
         time_display: $config.timeDisplay,
+        show_units: $config.timeUnits,
         list_mode: $config.listMode,
         stops: routesGroupedByStop
           .map((routes) => ({

@@ -3,12 +3,11 @@
   import type { RouteAtStop } from "$lib/state"
 
   interface Props {
-    feed: string
     routes: RouteAtStop[]
     timeOffsets: Record<string, number>
   }
 
-  let { feed, routes, timeOffsets }: Props = $props()
+  let { routes, timeOffsets }: Props = $props()
 
   interface TripDto {
     tripId: string
@@ -46,7 +45,7 @@
 
   async function getTrips() {
     const pairs = routes.map((r) => `${r.routeId},${r.stopId}`).join(";")
-    const response = await fetch(`${apiBaseUrl}/schedule/${feed}/${pairs}?limit=10`)
+    const response = await fetch(`${apiBaseUrl}/schedule/${pairs}?limit=10`)
     trips = (await response.json()).trips
   }
 
