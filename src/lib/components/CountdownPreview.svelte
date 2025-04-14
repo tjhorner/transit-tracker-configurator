@@ -66,7 +66,7 @@
           <tr>
             <td><strong>{trip.routeName}</strong></td>
             <td>{trip.headsign}</td>
-            <td style="text-align: right">{getCountdownText(trip)}</td>
+            <td style="text-align: right" class={trip.isRealtime ? "text-green-500 dark:text-green-400" : ""}>{getCountdownText(trip)}</td>
           </tr>
         {/each}
       </tbody>

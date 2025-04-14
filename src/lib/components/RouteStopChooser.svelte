@@ -17,6 +17,7 @@
   import * as turf from "@turf/turf"
   import { api } from "$lib/api"
   import { onMount } from "svelte"
+    import { LoaderCircle } from "@lucide/svelte"
 
   interface Props {
     config: ConfigState
@@ -34,7 +35,7 @@
   let timeOffsets = $state(config.stopTimeOffsets)
   let disabled = $derived(selected.length >= 5)
   let stops: any[] = $state([])
-  let abortController: AbortController | null = null
+  let abortController: AbortController | null = $state(null)
   let map: MapLibreMap | undefined = $state()
 
   let mapStyle = $derived($appearanceMode === "dark" ? "dark-matter-gl" : "positron-gl")
@@ -191,7 +192,7 @@
     standardControls
     class="h-full w-full"
     onmoveend={onMapMoved}
-    bounds={[-133.066406,18.812718,-59.809570,53.304621]}
+    bounds={[-133.066406, 18.812718, -59.80957, 53.304621]}
   >
     <GeoJSON id="service-areas" data={serviceAreas} maxzoom={15}>
       <FillLayer
@@ -199,7 +200,8 @@
         paint={{
           "fill-color": "#51c551",
           "fill-opacity": ["interpolate", ["linear"], ["zoom"], 0, 0.5, 10, 0.5, 13, 0]
-        }} />
+        }}
+      />
 
       <LineLayer
         id="service-areas-line"
@@ -207,7 +209,8 @@
           "line-color": "#51c551",
           "line-opacity": ["interpolate", ["linear"], ["zoom"], 0, 1, 10, 0.8, 13, 0],
           "line-width": 2
-        }} />
+        }}
+      />
     </GeoJSON>
 
     {#each stops as stop (stop.stopId)}
@@ -231,6 +234,35 @@
         class="pointer-events-none absolute z-[999] flex h-full w-full items-center justify-center text-center"
       >
         <p class="rounded-lg bg-black/60 p-4 text-4xl text-white">Zoom in to see stops</p>
+      </div>
+    {/if}
+
+    {#if !needsZoomIn && abortController}
+      <div
+        class="pointer-events-none absolute z-[999] flex h-full w-full items-center justify-center text-center"
+      >
+        <p class="rounded-lg bg-black/60 p-4 text-4xl text-white">
+          <LoaderCircle class="animate-spin" />
+        </p>
+      </div>
+    {/if}
+
+    {#if !needsZoomIn && !abortController && stops.length === 0}
+      <div
+        class="pointer-events-none absolute z-[999] flex h-full w-full items-center justify-center text-center"
+      >
+        <p class="rounded-lg bg-black/60 p-3 text-2xl text-white flex flex-col">
+          No stops found
+          <Button
+            class="pointer-events-auto text-blue-400 mt-1"
+            variant="link"
+            size="small"
+            href="https://transit-tracker.eastsideurbanism.org/docs/user-manual/faq/agency-support"
+            target="_blank"
+          >
+            Which agencies are supported?
+          </Button>
+        </p>
       </div>
     {/if}
   </MapLibre>
