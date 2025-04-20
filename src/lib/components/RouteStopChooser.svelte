@@ -180,7 +180,7 @@
                         </Tooltip.Trigger>
                         <Tooltip.Content>
                           <p class="max-w-64">
-                            This route has a dark color that might not show up very well on your Transit Tracker.
+                            This route uses a color that might not show up very well on your Transit Tracker.
                             You can change the color of this route in the <strong>Customize</strong> tab after saving.
                           </p>
                         </Tooltip.Content>
