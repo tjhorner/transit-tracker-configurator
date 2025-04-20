@@ -17,7 +17,8 @@
   import * as turf from "@turf/turf"
   import { api } from "$lib/api"
   import { onMount } from "svelte"
-    import { LoaderCircle } from "@lucide/svelte"
+  import { LoaderCircle, TriangleAlert } from "@lucide/svelte"
+  import * as Tooltip from "$lib/components/ui/tooltip"
 
   interface Props {
     config: ConfigState
@@ -83,6 +84,15 @@
     stops = await getStops(bounds.toArray())
   }
 
+  function colorIsDark(color: string) {
+    const r = parseInt(color.slice(1, 3), 16)
+    const g = parseInt(color.slice(3, 5), 16)
+    const b = parseInt(color.slice(5, 7), 16)
+
+    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return lum < 64
+  }
+
   const onMapMoved = debounce(_onMapMoved, 1000)
 
   onMount(() => {
@@ -145,6 +155,7 @@
           <Separator class="my-4" />
 
           {#each routes as route (route.routeId + route.stopId)}
+            {@const hasDarkColor = route.color ? colorIsDark(route.color) : false}
             <div class="selected-route [&:not(:last-child)]:mb-2">
               <label class="flex cursor-pointer items-start gap-2">
                 <Checkbox
@@ -158,7 +169,27 @@
                     )}
                 />
                 <div class="-mt-[3px]">
-                  <strong>Route: {route.routeName}</strong>
+                  {#if true}
+                    <Tooltip.Provider>
+                      <Tooltip.Root delayDuration={0}>
+                        <Tooltip.Trigger>
+                          <TriangleAlert
+                            class="relative bottom-[2px] inline dark:text-yellow-500 text-orange-500"
+                            size={18}
+                          />
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                          <p class="max-w-64">
+                            This route has a dark color that might not show up very well on your Transit Tracker.
+                            You can change the color of this route in the <strong>Customize</strong> tab after saving.
+                          </p>
+                        </Tooltip.Content>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                  {/if}
+                  <strong>
+                    Route: {route.routeName}
+                  </strong>
                   {#each route.headsigns as headsign}
                     <div class="headsign"><strong>→</strong> {headsign}</div>
                   {/each}
@@ -251,10 +282,10 @@
       <div
         class="pointer-events-none absolute z-[999] flex h-full w-full items-center justify-center text-center"
       >
-        <p class="rounded-lg bg-black/60 p-3 text-2xl text-white flex flex-col">
+        <p class="flex flex-col rounded-lg bg-black/60 p-3 text-2xl text-white">
           No stops found
           <Button
-            class="pointer-events-auto text-blue-400 mt-1"
+            class="pointer-events-auto mt-1 text-blue-400"
             variant="link"
             size="small"
             href="https://transit-tracker.eastsideurbanism.org/docs/user-manual/faq/agency-support"
