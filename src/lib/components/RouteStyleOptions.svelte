@@ -5,6 +5,7 @@
   import { Card, CardContent } from "$lib/components/ui/card"
   import { Trash } from "@lucide/svelte"
   import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select"
+  import ColorPicker from "./ui/ColorPicker.svelte"
 
   interface Props {
     configState: ConfigState
@@ -31,6 +32,17 @@
     style.routeId = routeId
     style.name = route?.routeName ?? ""
     style.color = route?.color ? `#${route.color}` : "#028e51"
+  }
+
+  function getPalette() {
+    const colors = new Set<string>(
+      [
+        ...styles.map((style) => style.color).filter((color) => color !== undefined).map((color) => color.toUpperCase()),
+        ...configState.routes.map((route) => route.color).filter((color) => color !== null).map((color => `#${color.toUpperCase()}`))
+      ]
+    )
+
+    return Array.from(colors)
   }
 </script>
 
@@ -65,7 +77,8 @@
 
         <Input type="text" bind:value={style.name} placeholder="Custom route name" class="flex-1" />
 
-        <Input type="color" bind:value={style.color} class="h-10 w-10 cursor-pointer p-0" />
+        <ColorPicker bind:value={style.color} palette={getPalette()} />
+        <!-- <Input type="color" bind:value={style.color} class="h-10 w-10 cursor-pointer p-0" /> -->
 
         <Button variant="destructive" class="px-3" onclick={() => styles.splice(idx, 1)}>
           <Trash />
