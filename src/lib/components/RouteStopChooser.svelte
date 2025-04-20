@@ -169,7 +169,7 @@
                     )}
                 />
                 <div class="-mt-[3px]">
-                  {#if true}
+                  {#if hasDarkColor}
                     <Tooltip.Provider>
                       <Tooltip.Root delayDuration={0}>
                         <Tooltip.Trigger>
