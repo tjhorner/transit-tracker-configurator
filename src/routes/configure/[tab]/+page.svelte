@@ -15,6 +15,7 @@
   import { page } from "$app/state"
   import { goto } from "$app/navigation"
   import LogsDialog from "$lib/components/configuration/LogsDialog.svelte"
+    import AdvancedConfig from "$lib/components/configuration/AdvancedConfig.svelte"
 
   let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
 
@@ -127,7 +128,7 @@
       </Tabs.Content>
 
       <Tabs.Content value="advanced">
-        There will be advanced options here one day. But today is apparently not that day.
+        <AdvancedConfig />
       </Tabs.Content>
     </Tabs.Root>
 

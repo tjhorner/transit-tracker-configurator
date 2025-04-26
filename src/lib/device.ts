@@ -86,6 +86,16 @@ async function setSelectConfig(
   return { ok: resp.ok, name }
 }
 
+async function setSwitchConfig(
+  baseUrl: string,
+  name: string,
+  value: boolean
+): Promise<SetConfigResult> {
+  const endpoint = value ? "turn_on" : "turn_off"
+  const resp = await postDevice(baseUrl, `/switch/${name}/${endpoint}`)
+  return { ok: resp.ok, name }
+}
+
 async function getConfig(baseUrl: string, name: string): Promise<string> {
   const resp = await fetch(`${baseUrl}/text/${name}`)
   if (!resp.ok) {
@@ -135,6 +145,8 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
   yield setSelectConfig(baseUrl, "time_display_config", config.timeDisplay)
   yield setSelectConfig(baseUrl, "time_units_config", config.timeUnits)
   yield setSelectConfig(baseUrl, "list_mode_config", config.listMode)
+
+  yield setSwitchConfig(baseUrl, "flip_display_config", config.displayOrientation === "flipped")
 }
 
 export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {

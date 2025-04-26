@@ -39,6 +39,7 @@ export interface ConfigState {
   timeDisplay: "arrival" | "departure"
   timeUnits: "long" | "short" | "none"
   listMode: "sequential" | "nextPerRoute"
+  displayOrientation: "normal" | "flipped"
 }
 
 function toGlobalId(feedCode: string, localId: string): string {
@@ -111,5 +112,6 @@ export const config = createPersistentStore<ConfigState>("config", {
   stopTimeOffsets: {},
   timeDisplay: "arrival",
   timeUnits: "long",
-  listMode: "sequential"
+  listMode: "sequential",
+  displayOrientation: "normal",
 }, migrateFeedCodeToGlobalIds)
