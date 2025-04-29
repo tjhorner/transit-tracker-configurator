@@ -146,7 +146,7 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
   yield setSelectConfig(baseUrl, "time_units_config", config.timeUnits)
   yield setSelectConfig(baseUrl, "list_mode_config", config.listMode)
 
-  yield setSwitchConfig(baseUrl, "flip_display_config", config.displayOrientation === "flipped")
+  yield setSwitchConfig(baseUrl, "flip_display", config.displayOrientation === "flipped")
 }
 
 export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {
