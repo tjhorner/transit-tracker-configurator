@@ -1,12 +1,22 @@
 {
   "name": "Transit Tracker Firmware",
-  "version": "v1.2.0",
+  "version": "v1.4.1",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": true,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
-      "parts": [{ "path": "firmware.factory.bin", "offset": 0 }]
+      "parts": [
+        {
+          "path": "https://transit-tracker.eastsideurbanism.org/firmware/firmware.factory.bin",
+          "offset": 0
+        }
+      ],
+      "ota": {
+        "md5": "61a75313ccf52aed11258be9490fae1d",
+        "path": "https://transit-tracker.eastsideurbanism.org/firmware/firmware.ota.bin",
+        "release_url": "https://github.com/EastsideUrbanism/transit-tracker/releases/tag/v1.4.1"
+      }
     }
   ]
 }
