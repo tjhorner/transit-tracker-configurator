@@ -58,7 +58,7 @@ async function postDevice(baseUrl: string, path: string): Promise<Response> {
   const resp = await fetch(`${baseUrl}${path}`, {
     method: "post",
     // @ts-ignore
-    targetAddressSpace: "private"
+    targetAddressSpace: "local"
   })
 
   return resp
@@ -161,13 +161,13 @@ export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: str
   await fetch(`${deviceBaseUrl}/button/write_preferences/press`, {
     method: "post",
     // @ts-ignore
-    targetAddressSpace: "private"
+    targetAddressSpace: "local"
   })
 
   await fetch(`${deviceBaseUrl}/button/reload_tracker/press`, {
     method: "post",
     // @ts-ignore
-    targetAddressSpace: "private"
+    targetAddressSpace: "local"
   })
 
   return results
