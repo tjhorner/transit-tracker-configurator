@@ -5,15 +5,24 @@
   import { Button } from "../ui/button"
   import { LoaderCircle, Upload } from "@lucide/svelte"
   import { goto } from "$app/navigation"
+  import { getSerialPort } from "$lib/utils"
+  import { ESPHomeRpcClient } from "$lib/esphome-rpc"
 
   let pushing = $state(false)
 
   async function pushConfig() {
+    let port: SerialPort | null = null
     pushing = true
     try {
-      const results = await pushConfigToDevice($config, $config.deviceBaseUrl!)
+      port = await getSerialPort()
+      await port.open({ baudRate: 115200 })
 
-      const errors = results.filter((result) => !result.ok)
+      const rpc = new ESPHomeRpcClient(port)
+      await rpc.connect()
+      const results = await pushConfigToDevice($config, rpc)
+      await rpc.disconnect()
+
+      const errors = results.filter((result) => !result)
       if (errors.length > 0) {
         toast.warning("Unable to push full config", {
           description: "Your Transit Tracker may need a firmware update.",
@@ -44,6 +53,7 @@
       })
     } finally {
       pushing = false
+      await port?.close()
     }
   }
 </script>

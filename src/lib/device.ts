@@ -1,6 +1,7 @@
 import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import type { ConfigState } from "./state"
 import { getSerialPort } from "./utils"
+import type { ESPHomeRpcClient } from "./esphome-rpc"
 
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await getSerialPort()
@@ -106,13 +107,12 @@ async function getConfig(baseUrl: string, name: string): Promise<string> {
   return value.value
 }
 
-function* configRequestGenerator(baseUrl: string, config: ConfigState) {
-  yield setTextConfig(baseUrl, "base_url_config", config.apiBaseUrl)
+function* configRequestGenerator(rpc: ESPHomeRpcClient, config: ConfigState) {
+  yield rpc.setTextEntity("base_url_config", config.apiBaseUrl)
 
-  yield setTextConfig(baseUrl, "feed_code_config", "")
+  yield rpc.setTextEntity("feed_code_config", "")
 
-  yield setTextConfig(
-    baseUrl,
+  yield rpc.setTextEntity(
     "schedule_config",
     config.routes
       .map((route) => {
@@ -122,8 +122,7 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join(";")
   )
 
-  yield setTextConfig(
-    baseUrl,
+  yield rpc.setTextEntity(
     "abbreviations_config",
     config.abbreviations
       .map((abbr) => {
@@ -132,8 +131,7 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join("\n")
   )
 
-  yield setTextConfig(
-    baseUrl,
+  yield rpc.setTextEntity(
     "route_styles_config",
     config.routeStyles
       .map((style) => {
@@ -142,33 +140,24 @@ function* configRequestGenerator(baseUrl: string, config: ConfigState) {
       .join("\n")
   )
 
-  yield setSelectConfig(baseUrl, "time_display_config", config.timeDisplay)
-  yield setSelectConfig(baseUrl, "time_units_config", config.timeUnits)
-  yield setSelectConfig(baseUrl, "list_mode_config", config.listMode)
+  yield rpc.setSelectEntity("time_display_config", config.timeDisplay)
+  yield rpc.setSelectEntity("time_units_config", config.timeUnits)
+  yield rpc.setSelectEntity("list_mode_config", config.listMode)
 
-  yield setSwitchConfig(baseUrl, "flip_display", config.displayOrientation === "flipped")
+  yield rpc.setSwitchEntity("flip_display", config.displayOrientation === "flipped" ? "ON" : "OFF")
 }
 
-export async function pushConfigToDevice(config: ConfigState, deviceBaseUrl: string) {
+export async function pushConfigToDevice(config: ConfigState, rpc: ESPHomeRpcClient) {
   const results = []
 
-  const configRequests = configRequestGenerator(deviceBaseUrl, config)
+  const configRequests = configRequestGenerator(rpc, config)
   for (const request of configRequests) {
     const result = await request
     results.push(result)
   }
 
-  await fetch(`${deviceBaseUrl}/button/write_preferences/press`, {
-    method: "post",
-    // @ts-ignore
-    targetAddressSpace: "local"
-  })
-
-  await fetch(`${deviceBaseUrl}/button/reload_tracker/press`, {
-    method: "post",
-    // @ts-ignore
-    targetAddressSpace: "local"
-  })
+  await rpc.pressButton("write_preferences")
+  await rpc.pressButton("reload_tracker")
 
   return results
 }

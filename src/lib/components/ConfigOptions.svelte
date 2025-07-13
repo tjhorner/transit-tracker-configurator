@@ -1,6 +1,8 @@
 <script lang="ts">
   import { pushConfigToDevice } from "$lib/device"
+    import { ESPHomeRpcClient } from "$lib/esphome-rpc"
   import { type ConfigState, config } from "$lib/state"
+    import { getSerialPort } from "$lib/utils"
   import VerticalButtons from "./ui/VerticalButtons.svelte"
 
   interface Props {
@@ -9,7 +11,11 @@
 
   async function pushConfig() {
     try {
-      await pushConfigToDevice($config, $config.deviceBaseUrl!)
+      const port = await getSerialPort()
+      const rpc = new ESPHomeRpcClient(port)
+      await rpc.connect()
+      await pushConfigToDevice($config, rpc)
+      await rpc.disconnect()
     } catch (e: any) {
       console.error(e)
       alert(

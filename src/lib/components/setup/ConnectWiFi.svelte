@@ -21,17 +21,16 @@
     LockKeyhole
   } from "@lucide/svelte"
   import { getSerialPort } from "$lib/utils"
-  import { ImprovSerial, type Ssid } from "improv-wifi-serial-sdk/dist/serial"
   import * as Form from "$lib/components/ui/form"
   import { Input } from "$lib/components/ui/input"
   import * as Select from "$lib/components/ui/select"
   import { zodClient } from "sveltekit-superforms/adapters"
   import { type Infer, superForm } from "sveltekit-superforms"
   import { onMount } from "svelte"
-  import { ImprovSerialCurrentState } from "improv-wifi-serial-sdk/dist/const"
+  import { ESPHomeRpcClient, type WiFiNetwork } from "$lib/esphome-rpc"
 
   interface Props {
-    onSuccess?: (deviceBaseUrl: string) => void
+    onSuccess?: () => void
   }
 
   let { onSuccess }: Props = $props()
@@ -39,17 +38,19 @@
   let scanning = $state(false)
   let connecting = $state(false)
 
-  let foundNetworks = $state<Ssid[]>([])
+  let foundNetworks = $state<WiFiNetwork[]>([])
 
   let manualSsidEntry = $state(false)
 
   let selectedNetworkIsSecure = $derived(
-    manualSsidEntry || foundNetworks.find((network) => network.name === $formData.ssid)?.secured
+    manualSsidEntry || foundNetworks.find((network) => network.ssid === $formData.ssid)?.auth
   )
-  let improvSerial: ImprovSerial | null = $state(null)
 
-  async function initializeImprov() {
-    const port = await getSerialPort()
+  let port: SerialPort | null = $state(null)
+  let rpcClient: ESPHomeRpcClient | null = $state(null)
+
+  async function initializeRpc() {
+    port = await getSerialPort()
 
     try {
       await port.open({ baudRate: 115200 })
@@ -60,9 +61,9 @@
       }
     }
 
-    improvSerial = new ImprovSerial(port, console)
+    rpcClient = new ESPHomeRpcClient(port)
 
-    improvSerial.addEventListener("error-changed", (event: any) => {
+    rpcClient.addEventListener("error-changed", (event: any) => {
       if (event.detail === 3) {
         // UNABLE_TO_CONNECT
         alert("Unable to connect to the network. Please check the password and try again.")
@@ -70,10 +71,10 @@
       }
     })
 
-    await improvSerial.initialize()
+    await rpcClient.connect()
 
-    improvSerial.addEventListener("disconnect", () => {
-      improvSerial = null
+    rpcClient.addEventListener("disconnect", () => {
+      rpcClient = null
     })
   }
 
@@ -81,11 +82,11 @@
     scanning = true
 
     try {
-      if (!improvSerial) {
-        await initializeImprov()
+      if (!rpcClient) {
+        await initializeRpc()
       }
 
-      const networks = await improvSerial!.scan()
+      const networks = await rpcClient!.scanWifiNetworks()
       foundNetworks = networks.sort((a, b) => b.rssi - a.rssi)
     } finally {
       scanning = false
@@ -96,14 +97,15 @@
     connecting = true
 
     try {
-      if (!improvSerial) {
-        await initializeImprov()
+      if (!rpcClient) {
+        await initializeRpc()
       }
 
-      await improvSerial!.provision($formData.ssid, $formData.password, 30_000)
-      if (improvSerial!.state === ImprovSerialCurrentState.PROVISIONED) {
-        onSuccess?.(improvSerial!.nextUrl!)
-      }
+      await rpcClient!.connectToWifi($formData.ssid, $formData.password)
+      onSuccess?.()
+    } catch (error: any) {
+      console.error("Failed to connect to WiFi:", error)
+      alert(`Failed to connect to WiFi: ${error.message || error}`)
     } finally {
       connecting = false
     }
@@ -125,12 +127,13 @@
     scanForNetworks()
 
     return async () => {
-      await improvSerial?.close()
+      await rpcClient?.disconnect()
+      await port?.close()
     }
   })
 </script>
 
-{#if improvSerial}
+{#if rpcClient}
   <div class="flex flex-col gap-2">
     <Form.Field {form} name="ssid">
       <Form.Control>
@@ -156,7 +159,7 @@
               </Select.Trigger>
               <Select.Content>
                 {#each foundNetworks as network}
-                  <Select.Item value={network.name}>
+                  <Select.Item value={network.ssid}>
                     {@const iconClass = "relative bottom-1"}
                     {#if network.rssi > -50}
                       <SignalHigh class={`${iconClass} text-green-400`} />
@@ -165,10 +168,10 @@
                     {:else}
                       <SignalLow class={`${iconClass} text-red-400`} />
                     {/if}
-                    {#if network.secured}
+                    {#if network.auth}
                       <LockKeyhole size={12} class="mr-1" />
                     {/if}
-                    {network.name}
+                    {network.ssid}
                     <span class="ml-2 text-muted-foreground">{network.rssi} dBm</span>
                   </Select.Item>
                 {/each}

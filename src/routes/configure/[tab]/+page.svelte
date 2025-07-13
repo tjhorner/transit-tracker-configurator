@@ -15,9 +15,7 @@
   import { page } from "$app/state"
   import { goto } from "$app/navigation"
   import LogsDialog from "$lib/components/configuration/LogsDialog.svelte"
-    import AdvancedConfig from "$lib/components/configuration/AdvancedConfig.svelte"
-
-  let connectedIp = $derived(new URL($config.deviceBaseUrl ?? "http://127.0.0.1").hostname)
+  import AdvancedConfig from "$lib/components/configuration/AdvancedConfig.svelte"
 
   let showConnectDialog = $state(false)
   let showLogsDialog = $state(false)
@@ -74,25 +72,7 @@
   </Dialog.Content>
 </Dialog.Root>
 
-<TopNav>
-  <div class="flex items-center gap-1 text-sm text-muted-foreground">
-    {#if $config.deviceBaseUrl}
-      Connected:
-      <Button variant="link" target="_blank" size="small" href={$config.deviceBaseUrl}
-        >{connectedIp}</Button
-      >
-      <Button
-        variant="link"
-        size="small"
-        class="ml-4 hover:text-red-500"
-        onclick={() => ($config.deviceBaseUrl = undefined)}>Disconnect</Button
-      >
-    {:else}
-      <Unplug size={16} class="text-muted-foreground" />
-      <span>Not connected to device</span>
-    {/if}
-  </div>
-</TopNav>
+<TopNav />
 
 <Card.Root class="w-xl">
   <Card.Header>
@@ -136,13 +116,7 @@
 
     <div class="flex w-full gap-2">
       <div class="flex flex-grow flex-col gap-1">
-        {#if $config.deviceBaseUrl}
-          <PushConfigButton />
-        {:else}
-          <Button class="flex-grow" onclick={() => (showConnectDialog = true)}>
-            <Cable /> Connect device
-          </Button>
-        {/if}
+        <PushConfigButton />
       </div>
 
       <Button class="flex-grow" variant="secondary" onclick={() => (showYamlDialog = true)}>
