@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { apiBaseUrl } from "$lib/config"
+  import { api } from "$lib/api"
   import type { ConfigState, Feed } from "$lib/state"
   import { onMount } from "svelte"
   import VerticalButtons from "./ui/VerticalButtons.svelte"
@@ -14,8 +14,7 @@
   let feeds: Feed[] = $state([])
 
   async function getFeeds() {
-    const response = await fetch(`${apiBaseUrl}/feeds`)
-    feeds = await response.json()
+    feeds = await api.getFeeds()
   }
 
   onMount(() => {

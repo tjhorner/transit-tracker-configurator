@@ -2,7 +2,7 @@
   import type { RouteAtStop } from "$lib/state"
   import { Popup } from "svelte-maplibre"
   import Skeleton from "./Skeleton.svelte"
-  import { apiBaseUrl } from "$lib/config"
+  import { api } from "$lib/api"
 
   interface Props {
     stop: any
@@ -31,8 +31,7 @@
   let shown = $state(false)
 
   async function getRoutes(stopId: string) {
-    const response = await fetch(`${apiBaseUrl}/stops/${stopId}/routes`)
-    return response.json()
+    return await api.getRoutesForStop(stopId)
   }
 
   function isSelected(routeId: string) {

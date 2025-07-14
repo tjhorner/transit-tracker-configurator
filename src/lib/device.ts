@@ -1,5 +1,5 @@
 import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
-import type { ConfigState } from "./state"
+import { getWebSocketEndpoint, type ConfigState } from "./state"
 import { getSerialPort } from "./utils"
 
 export async function getDeviceBaseUrl(): Promise<string> {
@@ -107,7 +107,7 @@ async function getConfig(baseUrl: string, name: string): Promise<string> {
 }
 
 function* configRequestGenerator(baseUrl: string, config: ConfigState) {
-  yield setTextConfig(baseUrl, "base_url_config", config.apiBaseUrl)
+  yield setTextConfig(baseUrl, "base_url_config", getWebSocketEndpoint(config.apiBaseUrl))
 
   yield setTextConfig(baseUrl, "feed_code_config", "")
 
