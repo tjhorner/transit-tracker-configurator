@@ -1,26 +1,31 @@
 <script lang="ts">
   import { pushConfigToDevice } from "$lib/device"
-  import { config } from "$lib/state"
+  import { config, deviceConnection } from "$lib/state"
   import { toast } from "svelte-sonner"
   import { Button } from "../ui/button"
   import { LoaderCircle, Upload } from "@lucide/svelte"
   import { goto } from "$app/navigation"
-  import { getSerialPort } from "$lib/utils"
-  import { ESPHomeRpcClient } from "$lib/esphome-rpc"
+  import { UsbTransitTrackerDevice } from "$lib/device/usb-device"
+  import type { TransitTrackerDevice } from "$lib/device/transit-tracker-device"
+  import { NetworkTransitTrackerDevice } from "$lib/device/network-device"
 
   let pushing = $state(false)
 
   async function pushConfig() {
-    let port: SerialPort | null = null
+    let device: TransitTrackerDevice
+    if ($deviceConnection.type === "usb") {
+      device = UsbTransitTrackerDevice.instance
+    } else if ($deviceConnection.type === "network") {
+      device = new NetworkTransitTrackerDevice($deviceConnection.baseUrl!)
+    } else {
+      toast.error("No device connected")
+      return
+    }
+
     pushing = true
     try {
-      port = await getSerialPort()
-      await port.open({ baudRate: 115200 })
-
-      const rpc = new ESPHomeRpcClient(port)
-      await rpc.connect()
-      const results = await pushConfigToDevice($config, rpc)
-      await rpc.disconnect()
+      const results = await pushConfigToDevice($config, device)
+      await device.close?.()
 
       const errors = results.filter((result) => !result)
       if (errors.length > 0) {
@@ -35,9 +40,17 @@
           }
         })
       } else {
-        toast.success("Configuration pushed successfully")
+        toast.success("Configuration saved successfully")
       }
     } catch (e: any) {
+      if (e.message.includes("No port selected")) {
+        toast.info("Not seeing your Transit Tracker in the list?", {
+          description: "Make sure your USB cable supports data transfer and not just charging.",
+          duration: 10000,
+        })
+        return
+      }
+
       if (e.name === "ConfigValidationError") {
         toast.error("Validation failed", {
           description: e.message,
@@ -46,14 +59,13 @@
         return
       }
 
-      console.error(e)
-      toast.error("Failed to push config", {
-        description: `Make sure you are on the same network as the device.\n\n(Error: ${e.message})`,
+      toast.error("Failed to save configuration", {
+        description: e.message,
         duration: 10000
       })
     } finally {
       pushing = false
-      await port?.close()
+      await device.close?.()
     }
   }
 </script>

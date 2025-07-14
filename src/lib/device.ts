@@ -2,6 +2,7 @@ import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import type { ConfigState } from "./state"
 import { getSerialPort } from "./utils"
 import type { ESPHomeRpcClient } from "./esphome-rpc"
+import type { TransitTrackerDevice } from "./device/transit-tracker-device"
 
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await getSerialPort()
@@ -43,76 +44,12 @@ export async function getDeviceBaseUrl(): Promise<string> {
   return improv.nextUrl!
 }
 
-interface SetConfigResult {
-  ok: boolean
-  name: string
-}
+function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigState) {
+  yield device.setTextEntity("base_url_config", config.apiBaseUrl)
 
-class ConfigValidationError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = "ConfigValidationError"
-  }
-}
+  yield device.setTextEntity("feed_code_config", "")
 
-async function postDevice(baseUrl: string, path: string): Promise<Response> {
-  const resp = await fetch(`${baseUrl}${path}`, {
-    method: "post",
-    // @ts-ignore
-    targetAddressSpace: "local"
-  })
-
-  return resp
-}
-
-async function setTextConfig(
-  baseUrl: string,
-  name: string,
-  value: string
-): Promise<SetConfigResult> {
-  if (value.length > 255) {
-    throw new ConfigValidationError(`Value for ${name} is too long: ${value.length} > 255`)
-  }
-
-  const resp = await postDevice(baseUrl, `/text/${name}/set?value=${encodeURIComponent(value)}`)
-  return { ok: resp.ok, name }
-}
-
-async function setSelectConfig(
-  baseUrl: string,
-  name: string,
-  value: string
-): Promise<SetConfigResult> {
-  const resp = await postDevice(baseUrl, `/select/${name}/set?option=${encodeURIComponent(value)}`)
-  return { ok: resp.ok, name }
-}
-
-async function setSwitchConfig(
-  baseUrl: string,
-  name: string,
-  value: boolean
-): Promise<SetConfigResult> {
-  const endpoint = value ? "turn_on" : "turn_off"
-  const resp = await postDevice(baseUrl, `/switch/${name}/${endpoint}`)
-  return { ok: resp.ok, name }
-}
-
-async function getConfig(baseUrl: string, name: string): Promise<string> {
-  const resp = await fetch(`${baseUrl}/text/${name}`)
-  if (!resp.ok) {
-    throw new Error(`Failed to get config value ${name} from device ${baseUrl}`)
-  }
-
-  const value = await resp.json()
-  return value.value
-}
-
-function* configRequestGenerator(rpc: ESPHomeRpcClient, config: ConfigState) {
-  yield rpc.setTextEntity("base_url_config", config.apiBaseUrl)
-
-  yield rpc.setTextEntity("feed_code_config", "")
-
-  yield rpc.setTextEntity(
+  yield device.setTextEntity(
     "schedule_config",
     config.routes
       .map((route) => {
@@ -122,7 +59,7 @@ function* configRequestGenerator(rpc: ESPHomeRpcClient, config: ConfigState) {
       .join(";")
   )
 
-  yield rpc.setTextEntity(
+  yield device.setTextEntity(
     "abbreviations_config",
     config.abbreviations
       .map((abbr) => {
@@ -131,7 +68,7 @@ function* configRequestGenerator(rpc: ESPHomeRpcClient, config: ConfigState) {
       .join("\n")
   )
 
-  yield rpc.setTextEntity(
+  yield device.setTextEntity(
     "route_styles_config",
     config.routeStyles
       .map((style) => {
@@ -140,24 +77,24 @@ function* configRequestGenerator(rpc: ESPHomeRpcClient, config: ConfigState) {
       .join("\n")
   )
 
-  yield rpc.setSelectEntity("time_display_config", config.timeDisplay)
-  yield rpc.setSelectEntity("time_units_config", config.timeUnits)
-  yield rpc.setSelectEntity("list_mode_config", config.listMode)
+  yield device.setSelectEntity("time_display_config", config.timeDisplay)
+  yield device.setSelectEntity("time_units_config", config.timeUnits)
+  yield device.setSelectEntity("list_mode_config", config.listMode)
 
-  yield rpc.setSwitchEntity("flip_display", config.displayOrientation === "flipped" ? "ON" : "OFF")
+  yield device.setSwitchEntity("flip_display", config.displayOrientation === "flipped" ? "ON" : "OFF")
 }
 
-export async function pushConfigToDevice(config: ConfigState, rpc: ESPHomeRpcClient) {
+export async function pushConfigToDevice(config: ConfigState, device: TransitTrackerDevice) {
   const results = []
 
-  const configRequests = configRequestGenerator(rpc, config)
+  const configRequests = configRequestGenerator(device, config)
   for (const request of configRequests) {
     const result = await request
     results.push(result)
   }
 
-  await rpc.pressButton("write_preferences")
-  await rpc.pressButton("reload_tracker")
+  await device.pressButton("write_preferences")
+  await device.pressButton("reload_tracker")
 
   return results
 }

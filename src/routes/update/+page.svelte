@@ -15,7 +15,7 @@
   </Card.Header>
   <Card.Content>
     <FirmwareFlasher
-      file="/firmware/firmware.bin"
+      file="https://transit-tracker.eastsideurbanism.org/firmware/firmware.bin"
       offset={0x10000}
       eraseFlash={false}
       bootButtonRequired={false}

@@ -15,7 +15,7 @@
   }
 
   let {
-    file = "/firmware/firmware.factory.bin",
+    file = "https://transit-tracker.eastsideurbanism.org/firmware/firmware.factory.bin",
     offset = 0,
     eraseFlash = false,
     bootButtonRequired = true,

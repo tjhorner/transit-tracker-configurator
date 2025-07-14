@@ -29,9 +29,13 @@ export interface Abbreviation {
   to: string
 }
 
+export interface DeviceConnection {
+  type: "network" | "usb" | "none"
+  baseUrl?: string
+}
+
 export interface ConfigState {
   apiBaseUrl: string
-  deviceBaseUrl?: string
   routes: RouteAtStop[]
   routeStyles: RouteStyle[]
   abbreviations: Abbreviation[]
@@ -115,3 +119,7 @@ export const config = createPersistentStore<ConfigState>("config", {
   listMode: "sequential",
   displayOrientation: "normal",
 }, migrateFeedCodeToGlobalIds)
+
+export const deviceConnection = createPersistentStore<DeviceConnection>("deviceConnection", {
+  type: "none",
+})

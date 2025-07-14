@@ -107,6 +107,9 @@ export class ESPHomeRpcClient extends EventTarget {
   constructor(port: SerialPort) {
     super()
     this.port = port
+    this.port.addEventListener("disconnect", () => {
+      this.disconnect()
+    })
   }
 
   /**
@@ -132,22 +135,34 @@ export class ESPHomeRpcClient extends EventTarget {
    */
   async disconnect(): Promise<void> {
     try {
-      // Release the reader and writer
-      if (this.reader) {
-        this.reader.releaseLock()
-        this.reader = null
-      }
-
-      if (this.writer) {
-        this.writer.releaseLock()
-        this.writer = null
-      }
-
       // Clear any pending requests with errors
       for (const [id, { reject }] of this.pendingRequests.entries()) {
         reject(new Error("Disconnected"))
         this.pendingRequests.delete(id)
       }
+
+      // Release the reader and writer
+      if (this.reader) {
+        try {
+          this.reader.releaseLock()
+        } catch (e: any) {
+          console.warn("Error releasing reader lock:", e)
+        }
+
+        this.reader = null
+      }
+
+      if (this.writer) {
+        try {
+          this.writer.releaseLock()
+        } catch (e: any) {
+          console.warn("Error releasing writer lock:", e)
+        }
+
+        this.writer = null
+      }
+
+      this.dispatchEvent(new Event("disconnect"))
 
       console.log("Disconnected from ESPHome device")
     } catch (error) {
@@ -451,16 +466,11 @@ export class ESPHomeRpcClient extends EventTarget {
         // Process the received data
         this.processData(value)
       }
-    } catch (error) {
-      console.error("Error reading from serial port:", error)
-    } finally {
-      // Ensure resources are released
-      if (this.reader) {
-        this.reader.releaseLock()
-        this.reader = null
+    } catch (error: any) {
+      if (!error.message.includes("Releasing")) {
+        await this.disconnect()
+        throw error
       }
-
-      this.dispatchEvent(new Event("disconnect"))
     }
   }
 

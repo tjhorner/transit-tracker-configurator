@@ -5,14 +5,14 @@
   import { Button } from "$lib/components/ui/button"
   import * as Card from "$lib/components/ui/card"
   import * as Tabs from "$lib/components/ui/tabs"
-  import { config } from "$lib/state"
+  import { deviceConnection } from "$lib/state"
   import { ArrowRight, CheckCircle, Cog, Cpu, Wifi } from "@lucide/svelte"
 
   let firmwareFlashSuccess = $state(false)
   let step = $state("firmware")
 
-  function onWiFiSetupSuccess(deviceBaseUrl: string) {
-    $config.deviceBaseUrl = deviceBaseUrl
+  function onWiFiSetupSuccess() {
+    $deviceConnection.type = "usb"
     step = "configure"
   }
 </script>

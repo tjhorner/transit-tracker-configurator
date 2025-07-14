@@ -63,14 +63,6 @@
 
     rpcClient = new ESPHomeRpcClient(port)
 
-    rpcClient.addEventListener("error-changed", (event: any) => {
-      if (event.detail === 3) {
-        // UNABLE_TO_CONNECT
-        alert("Unable to connect to the network. Please check the password and try again.")
-        connecting = false
-      }
-    })
-
     await rpcClient.connect()
 
     rpcClient.addEventListener("disconnect", () => {
@@ -221,7 +213,7 @@
         {#if scanning}
           Scanning...
         {:else}
-          Re-scan
+          Refresh
         {/if}
       </Button>
 

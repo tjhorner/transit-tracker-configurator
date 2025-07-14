@@ -5,23 +5,35 @@
   import { Cable, Usb, Wifi } from "@lucide/svelte"
   import { Button } from "../ui/button"
   import { Input } from "../ui/input"
+  import type { DeviceConnection } from "$lib/state"
 
   interface Props {
-    onSuccess?: (baseUrl: string) => void
+    onSuccess?: (deviceConnection: DeviceConnection) => void
   }
 
   let { onSuccess }: Props = $props()
 
-  let connectionType: "usb" | "wifi" = $state("usb")
+  let connectionType: "usb" | "network" = $state("usb")
   let ipAddress = $state("")
   let connecting = $state(false)
+
+  function connectUsb() {
+    onSuccess?.({
+      type: "usb"
+    })
+  }
+
+  const browserSupportsWebSerial = "serial" in navigator
 
   async function tryToConnect() {
     connecting = true
 
     try {
       const baseUrl = await getDeviceBaseUrl()
-      onSuccess?.(baseUrl)
+      onSuccess?.({
+        type: "network",
+        baseUrl
+      })
     } catch (e: any) {
       alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
     } finally {
@@ -31,7 +43,10 @@
 
   async function setIpAddress() {
     const baseUrl = new URL(`http://${ipAddress}`)
-    onSuccess?.(baseUrl.origin)
+    onSuccess?.({
+      type: "network",
+      baseUrl: baseUrl.origin
+    })
   }
 </script>
 
@@ -47,24 +62,28 @@
     </Label>
   </div>
   <div>
-    <RadioGroup.Item value="wifi" id="wifi" class="peer sr-only" />
+    <RadioGroup.Item value="network" id="network" class="peer sr-only" />
     <Label
-      for="wifi"
+      for="network"
       class="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
     >
       <Wifi class="mb-3 h-6 w-6" />
-      Manually enter IP
+      Connect via Network
     </Label>
   </div>
 </RadioGroup.Root>
 
 {#if connectionType === "usb"}
-  <Button class="flex-grow" disabled={connecting} onclick={tryToConnect}>
-    <Cable /> Connect via USB
-  </Button>
+  {#if browserSupportsWebSerial}
+    <Button class="flex-grow" disabled={connecting} onclick={connectUsb}>
+      <Cable /> Connect via USB
+    </Button>
+  {:else}
+    Your browser does not support connecting to devices via USB. Please use a Chromium-based browser like Google Chrome or Microsoft Edge, or connect to your Transit Tracker via the network.
+  {/if}
 {/if}
 
-{#if connectionType === "wifi"}
+{#if connectionType === "network"}
   <div class="flex flex-col gap-2">
     <Label for="ip">IP address</Label>
     <Input placeholder="127.0.0.1" bind:value={ipAddress} name="ip" id="ip" />
