@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { apiBaseUrl } from "$lib/config"
+  import { api } from "$lib/api"
   import type { RouteAtStop } from "$lib/state"
 
   interface Props {
@@ -45,8 +45,8 @@
 
   async function getTrips() {
     const pairs = routes.map((r) => `${r.routeId},${r.stopId}`).join(";")
-    const response = await fetch(`${apiBaseUrl}/schedule/${pairs}?limit=10`)
-    trips = (await response.json()).trips
+    const response = await api.getSchedule(pairs, 10)
+    trips = response.trips
   }
 
   $effect(() => {

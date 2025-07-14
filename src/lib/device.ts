@@ -1,7 +1,6 @@
 import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
-import type { ConfigState } from "./state"
+import { getWebSocketEndpoint, type ConfigState } from "./state"
 import { getSerialPort } from "./utils"
-import type { ESPHomeRpcClient } from "./esphome-rpc"
 import type { TransitTrackerDevice } from "./device/transit-tracker-device"
 
 export async function getDeviceBaseUrl(): Promise<string> {
@@ -45,7 +44,7 @@ export async function getDeviceBaseUrl(): Promise<string> {
 }
 
 function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigState) {
-  yield device.setTextEntity("base_url_config", config.apiBaseUrl)
+  yield device.setTextEntity("base_url_config", getWebSocketEndpoint(config.apiBaseUrl))
 
   yield device.setTextEntity("feed_code_config", "")
 

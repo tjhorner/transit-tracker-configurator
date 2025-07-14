@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { config } from "$lib/state"
+  import { config, getWebSocketEndpoint } from "$lib/state"
   import * as YAML from "json-to-pretty-yaml"
   import { Button } from "../ui/button"
   import { toast } from "svelte-sonner"
@@ -22,7 +22,7 @@
           }
         : {}),
       transit_tracker: {
-        base_url: $config.apiBaseUrl,
+        base_url: getWebSocketEndpoint($config.apiBaseUrl),
         time_display: $config.timeDisplay,
         show_units: $config.timeUnits,
         list_mode: $config.listMode,

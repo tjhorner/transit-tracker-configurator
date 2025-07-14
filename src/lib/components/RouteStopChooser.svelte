@@ -5,7 +5,6 @@
   import CountdownPreview from "./CountdownPreview.svelte"
   import type { ConfigState, RouteAtStop } from "$lib/state"
   import debounce from "p-debounce"
-  import { apiBaseUrl } from "$lib/config"
   import * as Card from "$lib/components/ui/card"
   import { Button } from "$lib/components/ui/button"
   import { Checkbox } from "$lib/components/ui/checkbox"
@@ -62,13 +61,10 @@
     }
 
     abortController = new AbortController()
-    const response = await fetch(
-      `${apiBaseUrl}/stops/within/${bounds[0][0]},${bounds[0][1]},${bounds[1][0]},${bounds[1][1]}`,
-      { signal: abortController?.signal }
-    )
+    const response = await api.getStopsWithin(bounds)
 
     abortController = null
-    return response.json()
+    return response
   }
 
   async function _onMapMoved({ target }: { target: MapLibreMap }) {
@@ -158,7 +154,7 @@
               <label class="flex cursor-pointer items-start gap-2">
                 <Checkbox
                   checked
-                  onCheckedChange={(e) =>
+                  onCheckedChange={() =>
                     selected.splice(
                       selected.findIndex(
                         (r) => r.routeId === route.routeId && r.stopId === route.stopId
@@ -172,14 +168,16 @@
                       <Tooltip.Root delayDuration={0}>
                         <Tooltip.Trigger>
                           <TriangleAlert
-                            class="relative bottom-[2px] inline dark:text-yellow-500 text-orange-500"
+                            class="relative bottom-[2px] inline text-orange-500 dark:text-yellow-500"
                             size={18}
                           />
                         </Tooltip.Trigger>
                         <Tooltip.Content>
                           <p class="max-w-64">
-                            This route uses a color that might not show up very well on your Transit Tracker.
-                            You can change the color of this route in the <strong>Customize</strong> tab after saving.
+                            This route uses a color that might not show up very well on your Transit
+                            Tracker. You can change the color of this route in the <strong
+                              >Customize</strong
+                            > tab after saving.
                           </p>
                         </Tooltip.Content>
                       </Tooltip.Root>

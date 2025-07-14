@@ -1,5 +1,5 @@
 import { writable } from "svelte/store"
-import { apiBaseUrl } from "./config"
+import { defaultBaseUrl } from "./config"
 
 export interface RouteAtStop {
   stopId: string
@@ -70,7 +70,18 @@ function migrateFeedCodeToGlobalIds(config: ConfigState & { feed?: Feed }): Conf
   }
 }
 
-function createPersistentStore<T>(key: string, initialValue: T, migrate?: (value: T) => T) {
+function migrateBaseUrlToHttp(config: ConfigState): ConfigState {
+  if (config.apiBaseUrl.startsWith("ws://") || config.apiBaseUrl.startsWith("wss://")) {
+    const url = new URL(config.apiBaseUrl)
+    url.protocol = url.protocol === "ws:" ? "http:" : "https:"
+    url.pathname = ""
+    config.apiBaseUrl = url.href
+  }
+
+  return config
+}
+
+function createPersistentStore<T>(key: string, initialValue: T, ...migrate: ((value: T) => T)[]) {
   let currentValue: T = initialValue
 
   // Attempt to retrieve existing value from localStorage
@@ -88,7 +99,7 @@ function createPersistentStore<T>(key: string, initialValue: T, migrate?: (value
     console.error(`Error parsing JSON from localStorage key "${key}":`, error)
   }
 
-  migrate && (currentValue = migrate(currentValue))
+  currentValue = migrate.reduce((value, migrateFn) => migrateFn(value), currentValue)
 
   // Create a Svelte writable store with the (possibly) retrieved value
   const store = writable<T>(currentValue)
@@ -101,7 +112,7 @@ function createPersistentStore<T>(key: string, initialValue: T, migrate?: (value
   return store
 }
 
-function getWebSocketEndpoint(baseUrl: string) {
+export function getWebSocketEndpoint(baseUrl: string) {
   const url = new URL(baseUrl)
   url.protocol = url.protocol === "http:" ? "ws:" : "wss:"
   url.pathname = "/"
@@ -109,7 +120,7 @@ function getWebSocketEndpoint(baseUrl: string) {
 }
 
 export const config = createPersistentStore<ConfigState>("config", {
-  apiBaseUrl: getWebSocketEndpoint(apiBaseUrl),
+  apiBaseUrl: defaultBaseUrl,
   routes: [],
   routeStyles: [],
   abbreviations: [],
@@ -118,7 +129,7 @@ export const config = createPersistentStore<ConfigState>("config", {
   timeUnits: "long",
   listMode: "sequential",
   displayOrientation: "normal",
-}, migrateFeedCodeToGlobalIds)
+}, migrateFeedCodeToGlobalIds, migrateBaseUrlToHttp)
 
 export const deviceConnection = createPersistentStore<DeviceConnection>("deviceConnection", {
   type: "none",
