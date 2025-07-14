@@ -14,7 +14,7 @@ class TransitTrackerApi {
 
   constructor(state: Readable<ConfigState>) {
     state.subscribe((config) => {
-      this.baseUrl = config.apiBaseUrl
+      this.baseUrl = new URL(config.apiBaseUrl).origin
     })
   }
 

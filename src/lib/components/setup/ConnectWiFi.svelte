@@ -74,12 +74,22 @@
     scanning = true
 
     try {
-      if (!rpcClient) {
-        await initializeRpc()
-      }
+      let tries = 0
+      while (tries < 3) {
+        if (!rpcClient) {
+          await initializeRpc()
+        }
 
-      const networks = await rpcClient!.scanWifiNetworks()
-      foundNetworks = networks.sort((a, b) => b.rssi - a.rssi)
+        const networks = await rpcClient!.scanWifiNetworks()
+        foundNetworks = networks.sort((a, b) => b.rssi - a.rssi)
+
+        if (foundNetworks.length > 0) {
+          break
+        }
+
+        tries++
+        await new Promise((resolve) => setTimeout(resolve, 5000))
+      }
     } finally {
       scanning = false
     }
