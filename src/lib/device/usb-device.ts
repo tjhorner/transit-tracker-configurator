@@ -1,5 +1,6 @@
 import { ConfigValidationError, type TransitTrackerDevice } from "./transit-tracker-device"
 import { ESPHomeRpcClient } from "$lib/esphome-rpc"
+import { getSerialPort } from "$lib/utils"
 
 export class UsbTransitTrackerDevice implements TransitTrackerDevice {
   static instance: UsbTransitTrackerDevice = new UsbTransitTrackerDevice()
@@ -10,10 +11,17 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
   async close() {
     if (this.rpc) {
       await this.rpc.disconnect()
+      this.rpc = null
     }
 
-    if (this.port && this.port.connected) {
-      await this.port.close()
+    if (this.port) {
+      try {
+        await this.port.close()
+      } catch (e: any) {
+        console.warn("Error closing serial port:", e)
+      }
+
+      this.port = null
     }
   }
 
@@ -47,7 +55,7 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
 
   private async initializeRpc() {
     if (!this.port) {
-      this.port = await this.getSerialPort()
+      this.port = await getSerialPort()
 
       try {
         await this.port.open({ baudRate: 115200 })
@@ -55,6 +63,10 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
         if (e.message.includes("already open")) {
           await this.port.close()
           await this.port.open({ baudRate: 115200 })
+        }
+
+        if (e.message.includes("Failed to open serial port")) {
+          throw new Error("Couldn't open serial port. Please close all other tabs or applications that might be connecting to the device.")
         }
       }
     }
@@ -69,16 +81,5 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
 
       await this.rpc.connect()
     }
-  }
-
-  private async getSerialPort() {
-    const pairedPorts = await navigator.serial.getPorts()
-    if (pairedPorts.length === 1) {
-      return pairedPorts[0]
-    }
-  
-    return await navigator.serial.requestPort({
-      filters: [{ usbVendorId: 0x303a, usbProductId: 0x1001 }]
-    })
   }
 }

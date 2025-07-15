@@ -107,9 +107,6 @@ export class ESPHomeRpcClient extends EventTarget {
   constructor(port: SerialPort) {
     super()
     this.port = port
-    this.port.addEventListener("disconnect", () => {
-      this.disconnect()
-    })
   }
 
   /**
@@ -141,6 +138,8 @@ export class ESPHomeRpcClient extends EventTarget {
         this.pendingRequests.delete(id)
       }
 
+      let didDisconnect = false
+
       // Release the reader and writer
       if (this.reader) {
         try {
@@ -150,6 +149,7 @@ export class ESPHomeRpcClient extends EventTarget {
         }
 
         this.reader = null
+        didDisconnect = true
       }
 
       if (this.writer) {
@@ -160,11 +160,13 @@ export class ESPHomeRpcClient extends EventTarget {
         }
 
         this.writer = null
+        didDisconnect = true
       }
 
-      this.dispatchEvent(new Event("disconnect"))
-
-      console.log("Disconnected from ESPHome device")
+      if (didDisconnect) {
+        this.dispatchEvent(new Event("disconnect"))
+        console.log("Disconnected from ESPHome device")
+      }
     } catch (error) {
       console.error("Error during disconnect:", error)
       throw error

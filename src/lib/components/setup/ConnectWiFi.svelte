@@ -55,6 +55,11 @@
     try {
       await port.open({ baudRate: 115200 })
     } catch (e: any) {
+      if (e.message.includes("Failed to open serial port")) {
+        alert("Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device.")
+        return
+      }
+
       if (!e.message.endsWith("already open.")) {
         alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
         return
@@ -73,11 +78,15 @@
   async function scanForNetworks() {
     scanning = true
 
+    if (!rpcClient) {
+      await initializeRpc()
+    }
+
     try {
       let tries = 0
       while (tries < 3) {
         if (!rpcClient) {
-          await initializeRpc()
+          break
         }
 
         const networks = await rpcClient!.scanWifiNetworks()
