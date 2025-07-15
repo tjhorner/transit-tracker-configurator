@@ -35,12 +35,16 @@
   }
 
   function getPalette() {
-    const colors = new Set<string>(
-      [
-        ...styles.map((style) => style.color).filter((color) => color !== undefined).map((color) => color.toUpperCase()),
-        ...configState.routes.map((route) => route.color).filter((color) => color !== null).map((color => `#${color.toUpperCase()}`))
-      ]
-    )
+    const colors = new Set<string>([
+      ...styles
+        .map((style) => style.color)
+        .filter((color) => color !== undefined)
+        .map((color) => color.toUpperCase()),
+      ...configState.routes
+        .map((route) => route.color)
+        .filter((color) => color !== null)
+        .map((color) => `#${color.toUpperCase()}`)
+    ])
 
     return Array.from(colors)
   }

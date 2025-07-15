@@ -56,12 +56,12 @@ function migrateFeedCodeToGlobalIds(config: ConfigState & { feed?: Feed }): Conf
     routes: config.routes.map((route) => ({
       ...route,
       stopId: toGlobalId(feedCode, route.stopId),
-      routeId: toGlobalId(feedCode, route.routeId),
+      routeId: toGlobalId(feedCode, route.routeId)
     })),
     routeStyles: config.routeStyles.map((style) => ({
       ...style,
-      routeId: toGlobalId(feedCode, style.routeId),
-    })),
+      routeId: toGlobalId(feedCode, style.routeId)
+    }))
   }
 }
 
@@ -114,17 +114,22 @@ export function getWebSocketEndpoint(baseUrl: string) {
   return url.href
 }
 
-export const config = createPersistentStore<ConfigState>("config", {
-  apiBaseUrl: defaultBaseUrl,
-  routes: [],
-  routeStyles: [],
-  abbreviations: [],
-  stopTimeOffsets: {},
-  timeDisplay: "arrival",
-  timeUnits: "long",
-  listMode: "sequential",
-  displayOrientation: "normal",
-}, migrateFeedCodeToGlobalIds, migrateBaseUrlToHttp)
+export const config = createPersistentStore<ConfigState>(
+  "config",
+  {
+    apiBaseUrl: defaultBaseUrl,
+    routes: [],
+    routeStyles: [],
+    abbreviations: [],
+    stopTimeOffsets: {},
+    timeDisplay: "arrival",
+    timeUnits: "long",
+    listMode: "sequential",
+    displayOrientation: "normal"
+  },
+  migrateFeedCodeToGlobalIds,
+  migrateBaseUrlToHttp
+)
 
 export interface DeviceConnection {
   type: "network" | "usb" | "none"
@@ -132,5 +137,5 @@ export interface DeviceConnection {
 }
 
 export const deviceConnection = createPersistentStore<DeviceConnection>("deviceConnection", {
-  type: "none",
+  type: "none"
 })

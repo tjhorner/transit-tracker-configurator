@@ -46,7 +46,7 @@
       if (e.message.includes("No port selected")) {
         toast.info("Not seeing your Transit Tracker in the list?", {
           description: "Make sure your USB cable supports data transfer and not just charging.",
-          duration: 10000,
+          duration: 10000
         })
         return
       }
@@ -54,7 +54,7 @@
       if (e.name === "ConfigValidationError") {
         toast.error("Validation failed", {
           description: e.message,
-          duration: 10000,
+          duration: 10000
         })
         return
       }

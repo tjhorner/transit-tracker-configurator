@@ -40,11 +40,7 @@
     {pluralize(stopsCount, "stop", "stops")}.
   </div>
 
-  <Button
-    size="sm"
-    variant="secondary"
-    onclick={() => (showRouteEditor = true)}
-  >
+  <Button size="sm" variant="secondary" onclick={() => (showRouteEditor = true)}>
     <Pencil />
     Edit routes
   </Button>

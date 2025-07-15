@@ -1,4 +1,8 @@
-import { ConfigValidationError, type SetEntityResult, type TransitTrackerDevice } from "./transit-tracker-device"
+import {
+  ConfigValidationError,
+  type SetEntityResult,
+  type TransitTrackerDevice
+} from "./transit-tracker-device"
 
 export class NetworkTransitTrackerDevice implements TransitTrackerDevice {
   constructor(private readonly baseUrl: string) {}
@@ -13,10 +17,7 @@ export class NetworkTransitTrackerDevice implements TransitTrackerDevice {
     return resp
   }
 
-  async setTextEntity(
-    name: string,
-    value: string
-  ) {
+  async setTextEntity(name: string, value: string) {
     if (value.length > 255) {
       throw new ConfigValidationError(`Value for ${name} is too long: ${value.length} > 255`)
     }
@@ -25,18 +26,12 @@ export class NetworkTransitTrackerDevice implements TransitTrackerDevice {
     return { ok: resp.ok, name }
   }
 
-  async setSelectEntity(
-    name: string,
-    value: string
-  ) {
+  async setSelectEntity(name: string, value: string) {
     const resp = await this.post(`/select/${name}/set?option=${encodeURIComponent(value)}`)
     return { ok: resp.ok, name }
   }
 
-  async setSwitchEntity(
-    name: string,
-    value: "ON" | "OFF"
-  ) {
+  async setSwitchEntity(name: string, value: "ON" | "OFF") {
     const endpoint = value === "ON" ? "turn_on" : "turn_off"
     const resp = await this.post(`/switch/${name}/${endpoint}`)
     return { ok: resp.ok, name }

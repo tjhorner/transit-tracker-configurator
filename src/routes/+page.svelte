@@ -18,11 +18,17 @@
   }
 </script>
 
-{#snippet cardLink(title: string, subtitle: string, href: string, Icon: Component, webSerialRequired: boolean = false)}
+{#snippet cardLink(
+  title: string,
+  subtitle: string,
+  href: string,
+  Icon: Component,
+  webSerialRequired: boolean = false
+)}
   <Card.Root
     class="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80"
     onmouseover={() => (!webSerialRequired || browserSupportsWebSerial) && preloadData(href)}
-    onclick={() => webSerialRequired ? goToWebSerialRequired(href) : goto(href)}
+    onclick={() => (webSerialRequired ? goToWebSerialRequired(href) : goto(href))}
   >
     <Card.Header class="p-4 text-center">
       <Icon class="mx-auto my-1" size={32} />
@@ -38,8 +44,20 @@
     <Card.Description>Welcome! What would you like to do?</Card.Description>
   </Card.Header>
   <Card.Content class="grid grid-cols-2 gap-4">
-    {@render cardLink("Initial setup", "Set up a new Transit Tracker", "/setup", WandSparkles, true)}
-    {@render cardLink("Update firmware", "Install the latest firmware", "/update", CircleFadingArrowUp, true)}
+    {@render cardLink(
+      "Initial setup",
+      "Set up a new Transit Tracker",
+      "/setup",
+      WandSparkles,
+      true
+    )}
+    {@render cardLink(
+      "Update firmware",
+      "Install the latest firmware",
+      "/update",
+      CircleFadingArrowUp,
+      true
+    )}
     {@render cardLink("Change Wi-Fi", "Connect to a different Wi-Fi network", "/wifi", Wifi, true)}
     {@render cardLink("Configure", "Change routes and customizations", "/configure/routes", Wrench)}
   </Card.Content>

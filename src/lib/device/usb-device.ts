@@ -66,7 +66,9 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
         }
 
         if (e.message.includes("Failed to open serial port")) {
-          throw new Error("Couldn't open serial port. Please close all other tabs or applications that might be connecting to the device.")
+          throw new Error(
+            "Couldn't open serial port. Please close all other tabs or applications that might be connecting to the device."
+          )
         }
       }
     }

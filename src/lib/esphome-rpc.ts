@@ -441,7 +441,7 @@ export class ESPHomeRpcClient extends EventTarget {
     if (!this.writer) {
       throw new Error("Not connected")
     }
-    
+
     console.log("Sending request:", request)
 
     return new Promise<JsonRpcResponse>((resolve, reject) => {

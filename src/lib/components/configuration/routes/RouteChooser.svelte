@@ -19,13 +19,7 @@
     headsigns: string[]
   }
 
-  const {
-    stop,
-    selected,
-    onRouteSelected,
-    onRouteDeselected,
-    disabled = false
-  }: Props = $props()
+  const { stop, selected, onRouteSelected, onRouteDeselected, disabled = false }: Props = $props()
 
   let routes: Route[] = $state([])
   let shown = $state(false)

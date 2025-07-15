@@ -26,7 +26,8 @@
     <Dialog.Header>
       <Dialog.Title>Change API server</Dialog.Title>
       <Dialog.Description>
-        <span class="text-orange-500 dark:text-yellow-500 font-bold">Warning</span>: Changing the API server will clear selected stops and routes.
+        <span class="font-bold text-orange-500 dark:text-yellow-500">Warning</span>: Changing the
+        API server will clear selected stops and routes.
       </Dialog.Description>
     </Dialog.Header>
 
@@ -36,21 +37,19 @@
 
 <div class="mb-5">
   <h4 class="scroll-m-20 text-xl font-semibold tracking-tight">API Server</h4>
-  <div class="mb-1 text-sm text-muted-foreground italic">
+  <div class="mb-1 text-sm italic text-muted-foreground">
     See also:
-    <a href="https://transit-tracker.eastsideurbanism.org/docs/advanced/api-server" target="_blank">API Server Documentation</a>
+    <a href="https://transit-tracker.eastsideurbanism.org/docs/advanced/api-server" target="_blank"
+      >API Server Documentation</a
+    >
   </div>
 
   <div class="mb-2 text-sm text-muted-foreground">
-    You can switch the API server your Transit Tracker uses in order to track
-    routes from other transit agencies.
+    You can switch the API server your Transit Tracker uses in order to track routes from other
+    transit agencies.
   </div>
 
-  <Button
-    size="sm"
-    variant="secondary"
-    onclick={() => (showChangeHostDialog = true)}
-  >
+  <Button size="sm" variant="secondary" onclick={() => (showChangeHostDialog = true)}>
     <Pencil />
     Change API server
   </Button>

@@ -18,7 +18,7 @@
   function isValidUrl(url: string): boolean {
     try {
       const parsedUrl = new URL(url)
-      if (![ "http:", "https:" ].includes(parsedUrl.protocol)) {
+      if (!["http:", "https:"].includes(parsedUrl.protocol)) {
         return false
       }
       return true
@@ -51,7 +51,7 @@
       saving = false
       return
     }
-    
+
     try {
       onSuccess?.(apiBaseUrl)
     } catch (e: any) {
@@ -72,28 +72,24 @@
       <Globe class="h-4 w-4" />
       API Base URL
     </Label>
-    <Input 
+    <Input
       placeholder="https://api.example.com"
       bind:value={apiBaseUrl}
       name="api-url"
       id="api-url"
       type="url"
     />
-    <p class="text-sm text-muted-foreground">
-      The base URL for the Transit Tracker API to use
-    </p>
+    <p class="text-sm text-muted-foreground">The base URL for the Transit Tracker API to use</p>
   </div>
 
   <div class="flex gap-2">
-    <Button 
-      class="flex-grow" 
-      onclick={saveApiBaseUrl} 
+    <Button
+      class="flex-grow"
+      onclick={saveApiBaseUrl}
       disabled={!apiBaseUrl || saving || !isValidUrl(apiBaseUrl)}
     >
       Save API URL
     </Button>
-    <Button variant="outline" onclick={resetToDefault} disabled={saving}>
-      Reset
-    </Button>
+    <Button variant="outline" onclick={resetToDefault} disabled={saving}>Reset</Button>
   </div>
 </div>

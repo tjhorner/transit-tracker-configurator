@@ -34,7 +34,8 @@
     <Dialog.Header>
       <Dialog.Title>Connect device</Dialog.Title>
       <Dialog.Description>
-        You can connect to your Transit Tracker via a USB connection to your computer or via your local network.
+        You can connect to your Transit Tracker via a USB connection to your computer or via your
+        local network.
       </Dialog.Description>
     </Dialog.Header>
 
@@ -43,7 +44,7 @@
 </Dialog.Root>
 
 <Dialog.Root bind:open={showLogsDialog}>
-  <Dialog.Content class="max-w-7xl max-h-full">
+  <Dialog.Content class="max-h-full max-w-7xl">
     <Dialog.Header>
       <Dialog.Title>Logs</Dialog.Title>
     </Dialog.Header>

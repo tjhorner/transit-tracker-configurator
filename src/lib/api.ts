@@ -35,7 +35,9 @@ class TransitTrackerApi {
   }
 
   async getSchedule(pairs: string, limit: number = 10) {
-    const response = await fetch(`${this.baseUrl}/schedule/${encodeURIComponent(pairs)}?limit=${limit}`)
+    const response = await fetch(
+      `${this.baseUrl}/schedule/${encodeURIComponent(pairs)}?limit=${limit}`
+    )
     if (!response.ok) {
       throw new Error(`Error fetching schedule: ${response.statusText}`)
     }
@@ -43,7 +45,9 @@ class TransitTrackerApi {
   }
 
   async getStopsWithin(bounds: number[][]) {
-    const response = await fetch(`${this.baseUrl}/stops/within/${bounds[0][0]},${bounds[0][1]},${bounds[1][0]},${bounds[1][1]}`)
+    const response = await fetch(
+      `${this.baseUrl}/stops/within/${bounds[0][0]},${bounds[0][1]},${bounds[1][0]},${bounds[1][1]}`
+    )
     if (!response.ok) {
       throw new Error(`Error fetching stops: ${response.statusText}`)
     }

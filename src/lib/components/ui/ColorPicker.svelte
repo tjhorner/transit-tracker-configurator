@@ -62,7 +62,7 @@
       iroPicker = iro.ColorPicker(colorPickerEl, {
         borderWidth: 1,
         width: colorPickerEl.clientWidth,
-        color: cssColor(),
+        color: cssColor()
       })
 
       iroPicker.on("color:change", (color: iro.Color) => {
@@ -84,7 +84,13 @@
   <Popover.Content class="w-56" trapFocus={false}>
     <div class="flex flex-col gap-2">
       <div bind:this={colorPickerEl} class="w-full"></div>
-      <Input class="px-2 py-1 h-8" placeholder="#000000" maxlength={7} {value} onkeyup={setColorFromInput} />
+      <Input
+        class="h-8 px-2 py-1"
+        placeholder="#000000"
+        maxlength={7}
+        {value}
+        onkeyup={setColorFromInput}
+      />
       {#if palette?.length}
         <div class="flex gap-1">
           {#each palette as color}
@@ -93,7 +99,7 @@
               style={`background-color: ${color}`}
               title={color}
               aria-label={color}
-              onclick={() => (setColor(color))}
+              onclick={() => setColor(color)}
             ></button>
           {/each}
         </div>

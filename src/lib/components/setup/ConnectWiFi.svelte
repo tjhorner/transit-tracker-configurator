@@ -56,7 +56,9 @@
       await port.open({ baudRate: 115200 })
     } catch (e: any) {
       if (e.message.includes("Failed to open serial port")) {
-        alert("Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device.")
+        alert(
+          "Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device."
+        )
         return
       }
 

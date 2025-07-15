@@ -80,7 +80,10 @@ function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigSta
   yield device.setSelectEntity("time_units_config", config.timeUnits)
   yield device.setSelectEntity("list_mode_config", config.listMode)
 
-  yield device.setSwitchEntity("flip_display", config.displayOrientation === "flipped" ? "ON" : "OFF")
+  yield device.setSwitchEntity(
+    "flip_display",
+    config.displayOrientation === "flipped" ? "ON" : "OFF"
+  )
 }
 
 export async function pushConfigToDevice(config: ConfigState, device: TransitTrackerDevice) {

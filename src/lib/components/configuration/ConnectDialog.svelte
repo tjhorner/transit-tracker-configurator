@@ -79,7 +79,8 @@
       <Cable /> Connect via USB
     </Button>
   {:else}
-    Your browser does not support connecting to devices via USB. Please use a Chromium-based browser like Google Chrome or Microsoft Edge, or connect to your Transit Tracker via the network.
+    Your browser does not support connecting to devices via USB. Please use a Chromium-based browser
+    like Google Chrome or Microsoft Edge, or connect to your Transit Tracker via the network.
   {/if}
 {/if}
 
