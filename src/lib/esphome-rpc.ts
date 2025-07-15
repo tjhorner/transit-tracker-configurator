@@ -13,7 +13,7 @@ enum EntityType {
 
 // Base interface for JSON-RPC requests
 interface JsonRpcRequest {
-  jsonrpc: string
+  jsonrpc: "2.0"
   method: string
   params?: any
   id: number
@@ -21,7 +21,7 @@ interface JsonRpcRequest {
 
 // Base interface for JSON-RPC responses
 interface JsonRpcResponse {
-  jsonrpc: string
+  jsonrpc: "2.0"
   id: number
   result?: any
   error?: {

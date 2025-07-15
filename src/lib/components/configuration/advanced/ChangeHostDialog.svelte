@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Label } from "$lib/components/ui/label"
-  import { Button } from "../ui/button"
-  import { Input } from "../ui/input"
+  import { Button } from "../../ui/button"
+  import { Input } from "../../ui/input"
   import { config } from "$lib/state"
   import { Globe } from "@lucide/svelte"
   import { defaultBaseUrl } from "$lib/config"

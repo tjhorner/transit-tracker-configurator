@@ -1,7 +1,7 @@
 <script lang="ts">
   import { config, type Abbreviation, type RouteStyle } from "$lib/state"
-  import AbbreviationOptions from "../AbbreviationOptions.svelte"
-  import RouteStyleOptions from "../RouteStyleOptions.svelte"
+  import AbbreviationOptions from "./AbbreviationOptions.svelte"
+  import RouteStyleOptions from "./RouteStyleOptions.svelte"
 
   function saveAbbreviations(abbreviations: Abbreviation[]) {
     $config.abbreviations = abbreviations

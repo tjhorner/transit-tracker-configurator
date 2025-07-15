@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CustomizeConfig from "$lib/components/configuration/CustomizeConfig.svelte"
+  import CustomizeConfig from "$lib/components/configuration/customize/CustomizeConfig.svelte"
   import PushConfigButton from "$lib/components/configuration/PushConfigButton.svelte"
-  import RouteConfig from "$lib/components/configuration/RouteConfig.svelte"
+  import RouteConfig from "$lib/components/configuration/routes/RouteConfig.svelte"
   import { Button } from "$lib/components/ui/button"
   import * as Card from "$lib/components/ui/card"
   import { Separator } from "$lib/components/ui/separator"
@@ -15,7 +15,7 @@
   import { page } from "$app/state"
   import { goto } from "$app/navigation"
   import LogsDialog from "$lib/components/configuration/LogsDialog.svelte"
-  import AdvancedConfig from "$lib/components/configuration/AdvancedConfig.svelte"
+  import AdvancedConfig from "$lib/components/configuration/advanced/AdvancedConfig.svelte"
 
   let showConnectDialog = $state(false)
   let showLogsDialog = $state(false)

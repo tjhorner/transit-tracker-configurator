@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { RouteAtStop } from "$lib/state"
   import { Popup } from "svelte-maplibre"
-  import Skeleton from "./Skeleton.svelte"
+  import Skeleton from "../../Skeleton.svelte"
   import { api } from "$lib/api"
 
   interface Props {

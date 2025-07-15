@@ -1,8 +1,8 @@
 <script lang="ts">
-  import * as RadioGroup from "../ui/radio-group"
-  import { Label } from "../ui/label"
+  import * as RadioGroup from "../../ui/radio-group"
+  import { Label } from "../../ui/label"
   import { config } from "$lib/state"
-  import { Button } from "../ui/button"
+  import { Button } from "../../ui/button"
   import { Pencil } from "@lucide/svelte"
   import ChangeHostDialog from "./ChangeHostDialog.svelte"
   import * as Dialog from "$lib/components/ui/dialog"

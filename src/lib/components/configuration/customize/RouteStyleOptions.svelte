@@ -5,7 +5,7 @@
   import { Card, CardContent } from "$lib/components/ui/card"
   import { Trash } from "@lucide/svelte"
   import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select"
-  import ColorPicker from "./ui/ColorPicker.svelte"
+  import ColorPicker from "../../ui/ColorPicker.svelte"
 
   interface Props {
     configState: ConfigState

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Pencil } from "@lucide/svelte"
-  import { Button } from "../ui/button"
-  import { Label } from "../ui/label"
-  import * as RadioGroup from "../ui/radio-group"
-  import RouteStopChooser from "../RouteStopChooser.svelte"
+  import { Button } from "../../ui/button"
+  import { Label } from "../../ui/label"
+  import * as RadioGroup from "../../ui/radio-group"
+  import RouteStopChooser from "./RouteStopChooser.svelte"
   import { config, type RouteAtStop } from "$lib/state"
   import { scale } from "svelte/transition"
   import { pluralize } from "$lib/utils"
