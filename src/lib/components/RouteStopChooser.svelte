@@ -33,7 +33,7 @@
 
   let selected = $state(config.routes)
   let timeOffsets = $state(config.stopTimeOffsets)
-  let disabled = $derived(selected.length >= 5)
+  let disabled = $derived(selected.length >= 25)
   let stops: any[] = $state([])
   let abortController: AbortController | null = $state(null)
   let map: MapLibreMap | undefined = $state()
