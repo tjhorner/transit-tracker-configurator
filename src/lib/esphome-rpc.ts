@@ -120,11 +120,25 @@ export class ESPHomeRpcClient extends EventTarget {
       // Start reading from the serial port
       this.startReading()
 
+      await this.performLivenessCheck()
+
       console.log("Connected to ESPHome device")
     } catch (error) {
       console.error("Failed to connect:", error)
       throw error
     }
+  }
+
+  performLivenessCheck() {
+    const timeoutPromise = new Promise<void>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Liveness check timed out"))
+      }, 5000)
+    })
+
+    const requestPromise = this.getDeviceInfo()
+
+    return Promise.any([requestPromise, timeoutPromise])
   }
 
   /**

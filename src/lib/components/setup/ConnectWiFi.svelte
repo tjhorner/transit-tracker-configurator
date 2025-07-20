@@ -68,7 +68,12 @@
 
     rpcClient = new ESPHomeRpcClient(port)
 
-    await rpcClient.connect()
+    try {
+      await rpcClient.connect()
+    } catch (error: any) {
+      alert(`Your Transit Tracker doesn't seem to be responding properly. Please try pressing the RESET button on the board and try again. Error: ${error.message || error}`)
+      await rpcClient.disconnect()
+    }
 
     rpcClient.addEventListener("disconnect", () => {
       rpcClient = null

@@ -41,6 +41,17 @@
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="firmware">
+        <p>
+          If this is the first time setting up your Transit Tracker, you'll
+          first need to perform the following steps:
+        </p>
+
+        <ol class="my-3 ml-6 list-decimal">
+          <li>Press and hold the button labeled BOOT on the board.</li>
+          <li>With BOOT held, press and release the RESET button quickly.</li>
+          <li>Release the BOOT button.</li>
+        </ol>
+
         <FirmwareFlasher eraseFlash={true} onSuccess={() => (firmwareFlashSuccess = true)} />
 
         {#if firmwareFlashSuccess}
