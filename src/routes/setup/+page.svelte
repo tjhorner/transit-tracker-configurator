@@ -52,7 +52,7 @@
           <li>Release the BOOT button.</li>
         </ol>
 
-        <p>
+        <p class="mb-3">
           If you did this correctly, the display should be blank. If it's not, try again.
         </p>
 
