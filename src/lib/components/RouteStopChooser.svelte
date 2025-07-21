@@ -113,8 +113,6 @@
         to account for the time it takes for you to get to the stop. For example, if it takes you 5
         minutes to walk to a stop, set the travel time to 5 minutes.
       </p>
-
-      <p class="leading-6 [&:not(:first-child)]:mt-2">You can select up to five routes.</p>
     </div>
 
     {#each selectionGroupedByStop as routes}
