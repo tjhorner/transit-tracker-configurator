@@ -52,6 +52,10 @@
           <li>Release the BOOT button.</li>
         </ol>
 
+        <p>
+          If you did this correctly, the display should be blank. If it's not, try again.
+        </p>
+
         <FirmwareFlasher eraseFlash={true} onSuccess={() => (firmwareFlashSuccess = true)} />
 
         {#if firmwareFlashSuccess}
