@@ -31,7 +31,7 @@ interface JsonRpcResponse {
 }
 
 // Device info response
-interface DeviceInfo {
+export interface DeviceInfo {
   name: string
   ip_address: string
   ssid: string

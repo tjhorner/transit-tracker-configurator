@@ -15,6 +15,7 @@
   </Card.Header>
   <Card.Content>
     <ConnectWiFi
+      showInfo={true}
       onSuccess={() => {
         toast.success("Wi-Fi network changed")
         goto("/")

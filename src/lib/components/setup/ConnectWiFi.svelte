@@ -27,13 +27,16 @@
   import { zodClient } from "sveltekit-superforms/adapters"
   import { type Infer, superForm } from "sveltekit-superforms"
   import { onMount } from "svelte"
-  import { ESPHomeRpcClient, type WiFiNetwork } from "$lib/esphome-rpc"
+  import { ESPHomeRpcClient, type DeviceInfo, type WiFiNetwork } from "$lib/esphome-rpc"
 
   interface Props {
+    showInfo?: boolean
     onSuccess?: () => void
   }
 
-  let { onSuccess }: Props = $props()
+  let { showInfo, onSuccess }: Props = $props()
+
+  let deviceInfo: DeviceInfo | null = $state(null)
 
   let initializing = $state(false)
   let scanning = $state(false)
@@ -76,10 +79,13 @@
 
       try {
         await rpcClient.connect()
-
+        
         rpcClient.addEventListener("disconnect", () => {
+          deviceInfo = null
           rpcClient = null
         })
+
+        deviceInfo = await rpcClient.getDeviceInfo()
       } catch (error: any) {
         alert(`Your Transit Tracker isn't responding properly. Please try pressing the RESET button on the board and try again.\n\nError: ${error.message || error}`)
         await rpcClient.disconnect()
@@ -160,6 +166,17 @@
 </script>
 
 {#if rpcClient && !initializing}
+  {#if showInfo && deviceInfo}
+    <div class="mb-4">
+      <p class="mb-1 text-sm font-semibold">Device Info</p>
+      <p class="text-sm text-muted-foreground">
+        <strong>Name:</strong> {deviceInfo.name}<br />
+        <strong>IP Address:</strong> {deviceInfo.ip_address}<br />
+        <strong>Current SSID:</strong> {deviceInfo.ssid || "Not connected"}
+      </p>
+    </div>
+  {/if}
+
   <div class="flex flex-col gap-2">
     <Form.Field {form} name="ssid">
       <Form.Control>
