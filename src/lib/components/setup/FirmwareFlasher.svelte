@@ -92,6 +92,7 @@
         }
       })
 
+      await esploader.after("hard_reset")
       await resetTransport(transport)
       await transport.disconnect()
 

@@ -129,16 +129,29 @@ export class ESPHomeRpcClient extends EventTarget {
     }
   }
 
-  performLivenessCheck() {
-    const timeoutPromise = new Promise<void>((_, reject) => {
-      setTimeout(() => {
-        reject(new Error("Liveness check timed out"))
-      }, 5000)
-    })
+  async performLivenessCheck() {
+    let tries = 0
 
-    const requestPromise = this.getDeviceInfo()
+    while (true) {
+      tries++
 
-    return Promise.any([requestPromise, timeoutPromise])
+      const timeout = new Promise<void>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("Liveness check timed out"))
+        }, 1000)
+      })
+  
+      const request = this.getDeviceInfo()
+
+      try {
+        await Promise.race([request, timeout])
+        return
+      } catch (e: any) {
+        if (tries >= 3) {
+          throw e
+        }
+      }
+    }
   }
 
   /**
@@ -557,6 +570,7 @@ export class ESPHomeRpcClient extends EventTarget {
           }
         } catch (error) {
           console.error("Error parsing JSON-RPC message:", error)
+          console.log("Raw message:", line)
         }
       }
     }

@@ -35,6 +35,7 @@
 
   let { onSuccess }: Props = $props()
 
+  let initializing = $state(false)
   let scanning = $state(false)
   let connecting = $state(false)
 
@@ -50,36 +51,43 @@
   let rpcClient: ESPHomeRpcClient | null = $state(null)
 
   async function initializeRpc() {
-    port = await getSerialPort()
-
+    initializing = true
+    
     try {
-      await port.open({ baudRate: 115200 })
-    } catch (e: any) {
-      if (e.message.includes("Failed to open serial port")) {
-        alert(
-          "Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device."
-        )
-        return
+      port = await getSerialPort()
+
+      try {
+        await port.open({ baudRate: 115200 })
+      } catch (e: any) {
+        if (e.message.includes("Failed to open serial port")) {
+          alert(
+            "Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device."
+          )
+          return
+        }
+
+        if (!e.message.endsWith("already open.")) {
+          alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
+          return
+        }
       }
 
-      if (!e.message.endsWith("already open.")) {
-        alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
-        return
+      rpcClient = new ESPHomeRpcClient(port)
+
+      try {
+        await rpcClient.connect()
+
+        rpcClient.addEventListener("disconnect", () => {
+          rpcClient = null
+        })
+      } catch (error: any) {
+        alert(`Your Transit Tracker isn't responding properly. Please try pressing the RESET button on the board and try again.\n\nError: ${error.message || error}`)
+        await rpcClient.disconnect()
+        rpcClient = null
       }
+    } finally {
+      initializing = false
     }
-
-    rpcClient = new ESPHomeRpcClient(port)
-
-    try {
-      await rpcClient.connect()
-    } catch (error: any) {
-      alert(`Your Transit Tracker doesn't seem to be responding properly. Please try pressing the RESET button on the board and try again. Error: ${error.message || error}`)
-      await rpcClient.disconnect()
-    }
-
-    rpcClient.addEventListener("disconnect", () => {
-      rpcClient = null
-    })
   }
 
   async function scanForNetworks() {
@@ -151,7 +159,7 @@
   })
 </script>
 
-{#if rpcClient}
+{#if rpcClient && !initializing}
   <div class="flex flex-col gap-2">
     <Form.Field {form} name="ssid">
       <Form.Control>
@@ -268,9 +276,9 @@
     button below to try again.
   </p>
 
-  <Button class="w-full" disabled={connecting} onclick={scanForNetworks}>
+  <Button class="w-full" disabled={initializing} onclick={scanForNetworks}>
     <Cable />
-    {#if connecting}
+    {#if initializing}
       Connecting to Transit Tracker...
     {:else}
       Connect to Transit Tracker
