@@ -50,9 +50,16 @@
     return YAML.stringify(generatedConfig)
   }
 
-  function copyYaml() {
-    navigator.clipboard.writeText(generateYaml())
-    toast.success("YAML copied to clipboard")
+  async function copyYaml() {
+    try {
+      await navigator.clipboard.writeText(generateYaml())
+      toast.success("YAML copied to clipboard")
+    } catch (e: any) {
+      toast.error("Failed to copy YAML to clipboard", {
+        description: e.message || "An unknown error occurred"
+      })
+      throw e
+    }
   }
 </script>
 
