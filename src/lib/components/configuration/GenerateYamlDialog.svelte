@@ -68,4 +68,4 @@
   Copy to clipboard
 </Button>
 
-<pre>{generateYaml()}</pre>
+<pre class="text-xs">{generateYaml()}</pre>
