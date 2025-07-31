@@ -52,8 +52,10 @@ function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigSta
     "schedule_config",
     config.routes
       .map((route) => {
+        let pair = `${route.routeId},${route.stopId}`
         const stopTimeOffset = config.stopTimeOffsets[route.stopId] ?? 0
-        return `${route.routeId},${route.stopId},${stopTimeOffset ? stopTimeOffset * -60 : 0}`
+        if (stopTimeOffset !== 0) pair += `,${stopTimeOffset * -60}`
+        return pair
       })
       .join(";")
   )
