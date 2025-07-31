@@ -455,7 +455,7 @@ export class ESPHomeRpcClient extends EventTarget {
       throw new Error("Not connected")
     }
 
-    console.log("Sending request:", request)
+    console.log("[ESPHome RPC] TX:", request)
 
     return new Promise<JsonRpcResponse>((resolve, reject) => {
       const id = request.id
@@ -530,12 +530,12 @@ export class ESPHomeRpcClient extends EventTarget {
           // Parse the JSON message
           const message = JSON.parse(jsonPart)
 
-          console.log("Received message:", message)
+          console.log("[ESPHome RPC] RX:", message)
 
           // Check if this is a response or an event
           if (message.method && !message.id) {
             // This is a server-sent event
-            console.log("Received server event:", message.method)
+            console.log("[ESPHome RPC] Event:", message.method)
 
             // Notify any listeners for this event
             const listeners = this.eventListeners.get(message.method)
@@ -572,6 +572,8 @@ export class ESPHomeRpcClient extends EventTarget {
           console.error("Error parsing JSON-RPC message:", error)
           console.log("Raw message:", line)
         }
+      } else {
+        console.log(`[ESPHome Log] ${line}`)
       }
     }
   }
