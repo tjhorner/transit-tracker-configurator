@@ -194,6 +194,11 @@ export class ESPHomeRpcClient extends EventTarget {
         this.dispatchEvent(new Event("disconnect"))
         console.log("Disconnected from ESPHome device")
       }
+
+      if (this.buffer.length > 0) {
+        console.warn("Remaining buffer before disconnect:", this.buffer)
+        this.buffer = ""
+      }
     } catch (error) {
       console.error("Error during disconnect:", error)
       throw error
