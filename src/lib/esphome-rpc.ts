@@ -468,6 +468,13 @@ export class ESPHomeRpcClient extends EventTarget {
       // Store the promise callbacks for later resolution
       this.pendingRequests.set(id, { resolve, reject })
 
+      setTimeout(() => {
+        if (this.pendingRequests.has(id)) {
+          this.pendingRequests.delete(id)
+          reject(new Error("Request timed out"))
+        }
+      }, 10000)
+
       // Serialize the request
       const jsonString = JSON.stringify(request)
       const data = this.encoder.encode(this.magicHeader + jsonString + "\r\n")
