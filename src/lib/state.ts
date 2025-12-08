@@ -39,6 +39,7 @@ export interface ConfigState {
   timeUnits: "long" | "short" | "none"
   listMode: "sequential" | "nextPerRoute"
   displayOrientation: "normal" | "flipped"
+  headsignOverflow: "hidden" | "scroll"
 }
 
 function toGlobalId(feedCode: string, localId: string): string {
@@ -125,7 +126,8 @@ export const config = createPersistentStore<ConfigState>(
     timeDisplay: "arrival",
     timeUnits: "long",
     listMode: "sequential",
-    displayOrientation: "normal"
+    displayOrientation: "normal",
+    headsignOverflow: "hidden"
   },
   migrateFeedCodeToGlobalIds,
   migrateBaseUrlToHttp

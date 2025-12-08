@@ -94,3 +94,21 @@
     </div>
   </RadioGroup.Root>
 </div>
+
+<div class="mb-5">
+  <h4 class="scroll-m-20 text-xl font-semibold tracking-tight">Headsign Overflow</h4>
+  <div class="mb-2 text-sm text-muted-foreground">
+    Change how headsign text is displayed when it exceeds the available space.
+  </div>
+
+  <RadioGroup.Root bind:value={$config.headsignOverflow}>
+    <div class="flex items-center space-x-2">
+      <RadioGroup.Item value="hidden" id="hidden" />
+      <Label for="hidden">Hidden &mdash; excess text will be cut off</Label>
+    </div>
+    <div class="flex items-center space-x-2">
+      <RadioGroup.Item value="scroll" id="scroll" />
+      <Label for="scroll">Scroll &mdash; headsigns will scroll back and forth to reveal all text</Label>
+    </div>
+  </RadioGroup.Root>
+</div>

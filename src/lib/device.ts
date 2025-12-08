@@ -86,6 +86,11 @@ function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigSta
     "flip_display",
     config.displayOrientation === "flipped" ? "ON" : "OFF"
   )
+
+  yield device.setSwitchEntity(
+    "scroll_headsigns",
+    config.headsignOverflow === "scroll" ? "ON" : "OFF"
+  )
 }
 
 export async function pushConfigToDevice(config: ConfigState, device: TransitTrackerDevice) {
