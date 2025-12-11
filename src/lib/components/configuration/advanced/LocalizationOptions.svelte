@@ -34,6 +34,18 @@
   </div>
 
   <div class="flex flex-col gap-2">
+    <Label for="hoursShort" class="flex items-center gap-2">
+      Hours Short Label
+    </Label>
+    <Input
+      placeholder="h"
+      bind:value={localization.hoursShort}
+      name="hoursShort"
+      id="hoursShort"
+    />
+  </div>
+
+  <div class="flex flex-col gap-2">
     <Label for="minLong" class="flex items-center gap-2">
       Minutes Long Label
     </Label>
@@ -54,18 +66,6 @@
       bind:value={localization.minShort}
       name="minShort"
       id="minShort"
-    />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <Label for="hoursShort" class="flex items-center gap-2">
-      Hours Short Label
-    </Label>
-    <Input
-      placeholder="h"
-      bind:value={localization.hoursShort}
-      name="hoursShort"
-      id="hoursShort"
     />
   </div>
 </div>
