@@ -91,6 +91,26 @@ function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigSta
     "scroll_headsigns",
     config.headsignOverflow === "scroll" ? "ON" : "OFF"
   )
+
+  yield device.setTextEntity(
+    "now_str_config",
+    config.localization.now
+  )
+
+  yield device.setTextEntity(
+    "min_long_str_config",
+    config.localization.minLong
+  )
+
+  yield device.setTextEntity(
+    "min_short_str_config",
+    config.localization.minShort
+  )
+
+  yield device.setTextEntity(
+    "hours_short_str_config",
+    config.localization.hoursShort
+  )
 }
 
 export async function pushConfigToDevice(config: ConfigState, device: TransitTrackerDevice) {

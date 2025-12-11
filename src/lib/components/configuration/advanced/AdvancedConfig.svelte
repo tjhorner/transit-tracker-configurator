@@ -1,11 +1,12 @@
 <script lang="ts">
   import * as RadioGroup from "../../ui/radio-group"
   import { Label } from "../../ui/label"
-  import { config } from "$lib/state"
+  import { config, type Localization } from "$lib/state"
   import { Button } from "../../ui/button"
   import { Pencil } from "@lucide/svelte"
   import ChangeHostDialog from "./ChangeHostDialog.svelte"
   import * as Dialog from "$lib/components/ui/dialog"
+  import LocalizationOptions from "./LocalizationOptions.svelte"
 
   let showChangeHostDialog = $state(false)
 
@@ -18,6 +19,10 @@
 
     $config.apiBaseUrl = newUrl
     showChangeHostDialog = false
+  }
+
+  function saveLocalization(localization: Localization) {
+    $config.localization = localization
   }
 </script>
 
@@ -68,4 +73,13 @@
       <Label for="flipped">Flipped &mdash; USB port on the left</Label>
     </div>
   </RadioGroup.Root>
+</div>
+
+<div class="mb-5">
+  <h4 class="scroll-m-20 text-xl font-semibold tracking-tight">Localization</h4>
+  <div class="mb-3 flex flex-col text-sm text-muted-foreground">
+    Change the text used for time units and "Now" on the display.
+  </div>
+
+  <LocalizationOptions configState={$config} onsave={saveLocalization} />
 </div>

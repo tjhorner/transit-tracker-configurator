@@ -29,6 +29,13 @@ export interface Abbreviation {
   to: string
 }
 
+export interface Localization {
+  now: string
+  minLong: string
+  minShort: string
+  hoursShort: string
+}
+
 export interface ConfigState {
   apiBaseUrl: string
   routes: RouteAtStop[]
@@ -40,6 +47,7 @@ export interface ConfigState {
   listMode: "sequential" | "nextPerRoute"
   displayOrientation: "normal" | "flipped"
   headsignOverflow: "hidden" | "scroll"
+  localization: Localization
 }
 
 function toGlobalId(feedCode: string, localId: string): string {
@@ -127,7 +135,13 @@ export const config = createPersistentStore<ConfigState>(
     timeUnits: "long",
     listMode: "sequential",
     displayOrientation: "normal",
-    headsignOverflow: "hidden"
+    headsignOverflow: "hidden",
+    localization: {
+      now: "Now",
+      minLong: "min",
+      minShort: "m",
+      hoursShort: "h"
+    }
   },
   migrateFeedCodeToGlobalIds,
   migrateBaseUrlToHttp
