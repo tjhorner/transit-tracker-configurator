@@ -9,6 +9,37 @@ export interface Feed {
   bounds: [number, number, number, number]
 }
 
+export interface Stop {
+  stopId: string
+  stopCode: string | null
+  name: string
+  lat: number
+  lon: number
+}
+
+export interface Trip {
+  tripId: string
+  routeId: string
+  routeName: string
+  stopId: string
+  stopName: string
+  headsign: string
+  arrivalTime: number
+  departureTime: number
+  isRealtime: boolean
+}
+
+export interface Schedule {
+  trips: Trip[]
+}
+
+export interface Route {
+  routeId: string
+  name: string
+  color: string | null
+  headsigns: string[]
+}
+
 class TransitTrackerApi {
   private baseUrl!: string
 
@@ -34,7 +65,7 @@ class TransitTrackerApi {
     return response.json()
   }
 
-  async getSchedule(pairs: string, limit: number = 10) {
+  async getSchedule(pairs: string, limit: number = 10): Promise<Schedule> {
     const response = await fetch(
       `${this.baseUrl}/schedule/${encodeURIComponent(pairs)}?limit=${limit}`
     )
@@ -44,7 +75,7 @@ class TransitTrackerApi {
     return response.json()
   }
 
-  async getStopsWithin(bounds: number[][]) {
+  async getStopsWithin(bounds: number[][]): Promise<Stop[]> {
     const response = await fetch(
       `${this.baseUrl}/stops/within/${bounds[0][0]},${bounds[0][1]},${bounds[1][0]},${bounds[1][1]}`
     )
@@ -54,7 +85,7 @@ class TransitTrackerApi {
     return response.json()
   }
 
-  async getRoutesForStop(stopId: string) {
+  async getRoutesForStop(stopId: string): Promise<Route[]> {
     const response = await fetch(`${this.baseUrl}/stops/${encodeURIComponent(stopId)}/routes`)
     if (!response.ok) {
       throw new Error(`Error fetching routes for stop: ${response.statusText}`)

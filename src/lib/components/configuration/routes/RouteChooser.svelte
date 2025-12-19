@@ -1,28 +1,21 @@
 <script lang="ts">
   import type { RouteAtStop } from "$lib/state"
-  import { Popup } from "svelte-maplibre"
   import Skeleton from "../../Skeleton.svelte"
-  import { api } from "$lib/api"
+  import { api, type Route, type Stop } from "$lib/api"
 
   interface Props {
-    stop: any
+    shown: boolean
+    stop: Stop
     selected: RouteAtStop[]
     onRouteSelected: (route: RouteAtStop) => void
     onRouteDeselected: (route: RouteAtStop) => void
     disabled?: boolean
   }
 
-  interface Route {
-    routeId: string
-    name: string
-    color: string | null
-    headsigns: string[]
-  }
-
-  const { stop, selected, onRouteSelected, onRouteDeselected, disabled = false }: Props = $props()
+  const { shown, stop, selected, onRouteSelected, onRouteDeselected, disabled = false }: Props = $props()
 
   let routes: Route[] = $state([])
-  let shown = $state(false)
+  let loadError: string | null = $state(null)
 
   async function getRoutes(stopId: string) {
     return await api.getRoutesForStop(stopId)
@@ -53,45 +46,52 @@
   }
 
   $effect(() => {
-    if (shown && routes.length === 0) {
-      getRoutes(stop.stopId).then((r) => (routes = r))
+    if (shown && routes.length === 0 && !loadError) {
+      getRoutes(stop.stopId)
+        .then((r) => (routes = r))
+        .catch((err) => {
+          loadError = `Failed to load routes: ${err.message}`
+          console.error("Error loading routes for stop:", err)
+        })
     }
   })
 </script>
 
-<Popup bind:open={shown} closeOnMove popupClass="p-0">
-  <div class="bg-background px-4 py-2 text-foreground">
-    <h4 class="mb-2 scroll-m-20 text-lg font-semibold tracking-tight">
-      {stop.name}
-      {#if stop.stopCode}
-        ({stop.stopCode})
-      {/if}
-    </h4>
-    {#if routes.length === 0}
+<div class="bg-background px-4 py-2 text-foreground">
+  <h4 class="mb-2 scroll-m-20 text-lg font-semibold tracking-tight">
+    {stop.name}
+    {#if stop.stopCode !== null}
+      ({stop.stopCode})
+    {/if}
+  </h4>
+  {#if routes.length === 0}
+    {#if loadError}
+      <div class="text-sm text-red-500">{loadError}</div>
+    {:else}
       <Skeleton />
     {/if}
-    {#each routes as route, index}
-      {@const routeSelected = isSelected(route.routeId)}
-      <div class="route">
-        <label>
-          <input
-            type="checkbox"
-            checked={routeSelected}
-            value={index}
-            onchange={(e) => onRouteCheckboxChange(e, route)}
-            disabled={!routeSelected && disabled}
-          />
-          <div class="-mt-[3px]">
-            <strong>Route: {route.name}</strong>
-            {#each route.headsigns as headsign}
-              <div class="headsign"><strong>→</strong> {headsign}</div>
-            {/each}
-          </div>
-        </label>
-      </div>
-    {/each}
-  </div>
-</Popup>
+  {/if}
+  {#each routes as route, index}
+    {@const routeSelected = isSelected(route.routeId)}
+    <div class="route">
+      <label>
+        <input
+          type="checkbox"
+          checked={routeSelected}
+          value={index}
+          onchange={(e) => onRouteCheckboxChange(e, route)}
+          disabled={!routeSelected && disabled}
+        />
+        <div class="-mt-[3px]">
+          <strong>Route: {route.name}</strong>
+          {#each route.headsigns as headsign}
+            <div class="headsign"><strong>→</strong> {headsign}</div>
+          {/each}
+        </div>
+      </label>
+    </div>
+  {/each}
+</div>
 
 <style>
   .route {
@@ -117,25 +117,5 @@
     display: flex;
     align-items: flex-start;
     gap: 2px;
-  }
-
-  :global(.maplibregl-popup-content) {
-    @apply bg-background p-0 text-foreground;
-  }
-
-  :global(.maplibregl-popup-anchor-bottom .maplibregl-popup-tip) {
-    @apply border-t-background;
-  }
-
-  :global(.maplibregl-popup-anchor-left .maplibregl-popup-tip) {
-    @apply border-r-background;
-  }
-
-  :global(.maplibregl-popup-anchor-right .maplibregl-popup-tip) {
-    @apply border-l-background;
-  }
-
-  :global(.maplibregl-popup-anchor-top .maplibregl-popup-tip) {
-    @apply border-b-background;
   }
 </style>

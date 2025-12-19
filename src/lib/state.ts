@@ -3,7 +3,7 @@ import { defaultBaseUrl } from "./config"
 
 export interface RouteAtStop {
   stopId: string
-  stopCode: string
+  stopCode: string | null
   stopName: string
   routeId: string
   routeName: string

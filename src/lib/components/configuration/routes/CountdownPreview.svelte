@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { api } from "$lib/api"
+  import { api, type Trip } from "$lib/api"
   import type { RouteAtStop } from "$lib/state"
 
   interface Props {
@@ -9,21 +9,9 @@
 
   let { routes, timeOffsets }: Props = $props()
 
-  interface TripDto {
-    tripId: string
-    routeId: string
-    routeName: string
-    stopId: string
-    stopName: string
-    headsign: string
-    arrivalTime: number
-    departureTime: number
-    isRealtime: boolean
-  }
+  let trips: Trip[] = $state([])
 
-  let trips: TripDto[] = $state([])
-
-  function getCountdownText(trip: TripDto) {
+  function getCountdownText(trip: Trip) {
     const now = new Date()
     const offset = timeOffsets[trip.stopId] ?? 0
     const diff = new Date(trip.arrivalTime * 1000).getTime() - now.getTime() + offset * -60000

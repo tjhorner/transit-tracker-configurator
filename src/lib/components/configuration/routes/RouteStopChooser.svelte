@@ -14,10 +14,11 @@
   import { mode as appearanceMode } from "mode-watcher"
   import type { FeatureCollection } from "geojson"
   import * as turf from "@turf/turf"
-  import { api } from "$lib/api"
+  import { api, type Stop } from "$lib/api"
   import { onMount } from "svelte"
   import { LoaderCircle, TriangleAlert } from "@lucide/svelte"
   import * as Tooltip from "$lib/components/ui/tooltip"
+    import RouteChooserPopup from "./RouteChooserPopup.svelte"
 
   interface Props {
     config: ConfigState
@@ -34,7 +35,7 @@
   let selected = $state(config.routes)
   let timeOffsets = $state(config.stopTimeOffsets)
   let disabled = $derived(selected.length >= 25)
-  let stops: any[] = $state([])
+  let stopGroups: Stop[][] = $state([])
   let abortController: AbortController | null = $state(null)
   let map: MapLibreMap | undefined = $state()
 
@@ -55,6 +56,29 @@
     })
   }
 
+  function groupVeryCloseStops(stops: Stop[]) {
+    const grouped: Stop[][] = []
+
+    for (const stop of stops) {
+      const existingGroup = grouped.find((group) => {
+        const dist = turf.distance(
+          turf.point([stop.lon, stop.lat]),
+          turf.point([group[0].lon, group[0].lat]),
+          { units: "meters" }
+        )
+        return dist < 15
+      })
+
+      if (existingGroup) {
+        existingGroup.push(stop)
+      } else {
+        grouped.push([stop])
+      }
+    }
+
+    return grouped
+  }
+
   async function getStops(bounds: number[][]) {
     if (abortController) {
       abortController.abort()
@@ -62,22 +86,23 @@
 
     abortController = new AbortController()
     const response = await api.getStopsWithin(bounds)
+    const groupedStops = groupVeryCloseStops(response)
 
     abortController = null
-    return response
+    return groupedStops
   }
 
   async function _onMapMoved({ target }: { target: MapLibreMap }) {
     if (target.getZoom() < 15) {
       needsZoomIn = true
-      stops = []
+      stopGroups = []
       return
     }
 
     needsZoomIn = false
 
     const bounds = target.getBounds()
-    stops = await getStops(bounds.toArray())
+    stopGroups = await getStops(bounds.toArray())
   }
 
   function colorIsDark(color: string) {
@@ -238,10 +263,10 @@
       />
     </GeoJSON>
 
-    {#each stops as stop (stop.stopId)}
-      <DefaultMarker lngLat={[stop.lon, stop.lat]} class="cursor-pointer">
-        <RouteChooser
-          {stop}
+    {#each stopGroups as stops (stops[0].stopId)}
+      <DefaultMarker lngLat={[stops[0].lon, stops[0].lat]} class="cursor-pointer">
+        <RouteChooserPopup
+          {stops}
           {selected}
           {disabled}
           onRouteSelected={(route: RouteAtStop) => selected.push(route)}
@@ -272,7 +297,7 @@
       </div>
     {/if}
 
-    {#if !needsZoomIn && !abortController && stops.length === 0}
+    {#if !needsZoomIn && !abortController && stopGroups.length === 0}
       <div
         class="pointer-events-none absolute z-[999] flex h-full w-full items-center justify-center text-center"
       >
