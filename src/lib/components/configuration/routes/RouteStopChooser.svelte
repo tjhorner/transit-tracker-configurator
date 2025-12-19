@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { DefaultMarker, FillLayer, GeoJSON, LineLayer } from "svelte-maplibre"
+  import { Control, DefaultMarker, FillLayer, GeoJSON, LineLayer } from "svelte-maplibre"
   import { MapLibre, type Map as MapLibreMap } from "svelte-maplibre"
-  import RouteChooser from "./RouteChooser.svelte"
   import CountdownPreview from "./CountdownPreview.svelte"
   import type { ConfigState, RouteAtStop } from "$lib/state"
   import debounce from "p-debounce"
@@ -18,7 +17,9 @@
   import { onMount } from "svelte"
   import { LoaderCircle, TriangleAlert } from "@lucide/svelte"
   import * as Tooltip from "$lib/components/ui/tooltip"
-    import RouteChooserPopup from "./RouteChooserPopup.svelte"
+  import RouteChooserPopup from "./RouteChooserPopup.svelte"
+  import LocationSearch from "./LocationSearch.svelte"
+  import { PUBLIC_GOOGLE_MAPS_API_KEY as googleMapsApiKey } from "$env/static/public"
 
   interface Props {
     config: ConfigState
@@ -244,6 +245,15 @@
     onmoveend={onMapMoved}
     bounds={[-133.066406, 18.812718, -59.80957, 53.304621]}
   >
+    <Control position="top-right">
+      <LocationSearch
+        apiKey={googleMapsApiKey}
+        onPlaceSelected={(location) => {
+          map?.flyTo({ center: [location.lng, location.lat], zoom: 16, animate: false })
+        }}
+      />
+    </Control>
+
     <GeoJSON id="service-areas" data={serviceAreas} maxzoom={15}>
       <FillLayer
         id="service-areas-fill"

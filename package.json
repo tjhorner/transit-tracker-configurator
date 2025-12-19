@@ -44,6 +44,7 @@
     "zod": "^3.24.2"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@jaames/iro": "^5.5.2",
     "@turf/turf": "^7.2.0",
     "@xterm/addon-fit": "^0.10.0",

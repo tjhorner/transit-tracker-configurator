@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: "main"
+    branches: [ main ]
 
 jobs:
   build_site:
@@ -27,6 +27,7 @@ jobs:
       - name: build
         env:
           PUBLIC_API_HOST: https://tt.horner.tj
+          PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.PUBLIC_GOOGLE_MAPS_API_KEY }}
         run: pnpm build
 
       - name: Upload Artifacts
