@@ -18,19 +18,26 @@
 </script>
 
 <Popup bind:open={shown} closeOnMove popupClass="p-0">
-  {#each stops as stop (stop.stopId)}
-    <RouteChooser
-      {shown}
-      {stop}
-      {selected}
-      {disabled}
-      onRouteSelected={onRouteSelected}
-      onRouteDeselected={onRouteDeselected}
-    />
-  {/each}
+  <div class="route-chooser">
+    {#each stops as stop (stop.stopId)}
+      <RouteChooser
+        {shown}
+        {stop}
+        {selected}
+        {disabled}
+        onRouteSelected={onRouteSelected}
+        onRouteDeselected={onRouteDeselected}
+      />
+    {/each}
+  </div>
 </Popup>
 
 <style>
+  .route-chooser {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
   :global(.maplibregl-popup-content) {
     @apply bg-background p-0 text-foreground;
   }

@@ -66,6 +66,9 @@ importers:
       '@types/geojson':
         specifier: ^7946.0.16
         version: 7946.0.16
+      '@types/google.maps':
+        specifier: ^3.58.1
+        version: 3.58.1
       '@types/json-to-pretty-yaml':
         specifier: ^1.2.1
         version: 1.2.1
