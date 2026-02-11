@@ -171,6 +171,7 @@
       <p class="mb-1 text-sm font-semibold">Device Info</p>
       <p class="text-sm text-muted-foreground">
         <strong>Name:</strong> {deviceInfo.name}<br />
+        <strong>Version:</strong> {deviceInfo.project_version}<br />
         <strong>IP Address:</strong> {deviceInfo.ip_address}<br />
         <strong>Current SSID:</strong> {deviceInfo.ssid || "Not connected"}
       </p>
