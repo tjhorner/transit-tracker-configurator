@@ -33,14 +33,15 @@
       return
     }
 
+    if (apiBaseUrl.endsWith("/")) {
+      apiBaseUrl = apiBaseUrl.slice(0, -1)
+    }
+
     saving = true
 
     try {
       const resp = await fetch(`${apiBaseUrl}/feeds`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        method: "GET"
       })
 
       if (!resp.ok) {
