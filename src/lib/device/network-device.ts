@@ -7,14 +7,35 @@ import {
 export class NetworkTransitTrackerDevice implements TransitTrackerDevice {
   constructor(private readonly baseUrl: string) {}
 
-  private async post(path: string): Promise<Response> {
+  private async request(path: string, method: string): Promise<Response> {
     const resp = await fetch(`${this.baseUrl}${path}`, {
-      method: "post",
+      method,
       // @ts-ignore
       targetAddressSpace: "local"
     })
 
     return resp
+  }
+
+  private async get(path: string): Promise<Response> {
+    return this.request(path, "get")
+  }
+
+  private async post(path: string): Promise<Response> {
+    return this.request(path, "post")
+  }
+
+  async getProjectVersion(): Promise<string | null> {
+    try {
+      const resp = await this.get("/text_sensor/project_version_text")
+      if (!resp.ok) {
+        return null
+      }
+      const data = await resp.json()
+      return data.state || null
+    } catch {
+      return null
+    }
   }
 
   async setTextEntity(name: string, value: string) {

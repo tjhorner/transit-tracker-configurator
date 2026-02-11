@@ -2,6 +2,7 @@ import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import { getWebSocketEndpoint, type ConfigState } from "./state"
 import { getSerialPort } from "./utils"
 import type { TransitTrackerDevice } from "./device/transit-tracker-device"
+import semver from "semver"
 
 export async function getDeviceBaseUrl(): Promise<string> {
   const port = await getSerialPort()
@@ -43,7 +44,12 @@ export async function getDeviceBaseUrl(): Promise<string> {
   return improv.nextUrl!
 }
 
-function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigState) {
+async function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigState) {
+  let projectVersion = await device.getProjectVersion()
+  if (projectVersion === "dev") {
+    projectVersion = "999.0.0"
+  }
+
   yield device.setTextEntity("base_url_config", getWebSocketEndpoint(config.apiBaseUrl))
 
   yield device.setTextEntity("feed_code_config", "")
@@ -82,10 +88,12 @@ function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigSta
   yield device.setSelectEntity("time_units_config", config.timeUnits)
   yield device.setSelectEntity("list_mode_config", config.listMode)
 
-  yield device.setSwitchEntity(
-    "flip_display",
-    config.displayOrientation === "flipped" ? "ON" : "OFF"
-  )
+  if (!projectVersion || semver.lt(projectVersion, "2.7.0")) {
+    yield device.setSwitchEntity(
+      "flip_display",
+      config.displayOrientation === "flipped" ? "ON" : "OFF"
+    )
+  }
 
   yield device.setSwitchEntity(
     "scroll_headsigns",
@@ -117,8 +125,7 @@ export async function pushConfigToDevice(config: ConfigState, device: TransitTra
   const results = []
 
   const configRequests = configRequestGenerator(device, config)
-  for (const request of configRequests) {
-    const result = await request
+  for await (const result of configRequests) {
     results.push(result)
   }
 

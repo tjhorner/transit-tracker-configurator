@@ -25,6 +25,12 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
     }
   }
 
+  async getProjectVersion(): Promise<string | null> {
+    await this.initializeRpc()
+    const { project_version } = await this.rpc!.getDeviceInfo()
+    return project_version
+  }
+
   async setTextEntity(id: string, value: string) {
     if (value.length > 255) {
       throw new ConfigValidationError(`Value for ${id} is too long: ${value.length} > 255`)

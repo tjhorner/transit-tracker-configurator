@@ -13,6 +13,7 @@ export class ConfigValidationError extends Error {
 export interface TransitTrackerDevice {
   close?(): Promise<void>
 
+  getProjectVersion(): Promise<string | null>
   setTextEntity(id: string, value: string): Promise<SetEntityResult>
   setSelectEntity(id: string, value: string): Promise<SetEntityResult>
   setSwitchEntity(id: string, value: "ON" | "OFF"): Promise<SetEntityResult>
