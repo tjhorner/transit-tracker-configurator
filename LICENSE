@@ -1,14 +1,3 @@
-# Transit Tracker Configurator
-
-![](screenshot.jpg)
-
-By popular demand, this is the source for the web-based UI used to configure [Transit Tracker](https://transit-tracker.eastsideurbanism.org/) devices. It's made with SvelteKit and has an incredible amount of tech debt and spaghetti. It should probably be rewritten from scratch to be more maintainable and easier to reason about, but who knows when I'll have the time to do that.
-
-Have fun.
-
-## License
-
-```
 MIT License
 
 Copyright (c) 2026 TJ Horner
@@ -30,4 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
