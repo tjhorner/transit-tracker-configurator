@@ -26,6 +26,7 @@
         time_display: $config.timeDisplay,
         show_units: $config.timeUnits,
         list_mode: $config.listMode,
+        scroll_headsigns: $config.headsignOverflow === "scroll",
         stops: routesGroupedByStop
           .map((routes) => ({
             stop_id: routes[0].stopId,
