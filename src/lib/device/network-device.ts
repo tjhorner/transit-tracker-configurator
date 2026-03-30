@@ -39,8 +39,8 @@ export class NetworkTransitTrackerDevice implements TransitTrackerDevice {
   }
 
   async setTextEntity(name: string, value: string) {
-    if (value.length > 255) {
-      throw new ConfigValidationError(`Value for ${name} is too long: ${value.length} > 255`)
+    if (value.length > 512) {
+      throw new ConfigValidationError(`Value for ${name} is too long: ${value.length} > 512`)
     }
 
     const resp = await this.post(`/text/${name}/set?value=${encodeURIComponent(value)}`)
