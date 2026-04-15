@@ -7,7 +7,7 @@
   import { ESPHomeRpcClient, type DeviceInfo } from "$lib/esphome-rpc"
   import { getSerialContext } from "$lib/serial-context"
   import { CircleCheck, Clipboard } from "@lucide/svelte"
-  import { onMount } from "svelte"
+  import { onDestroy } from "svelte"
   import { toast } from "svelte-sonner"
 
   let checking = $state(false)
@@ -91,11 +91,9 @@
     }
   }
 
-  onMount(() => {
-    return async () => {
-      await rpcClient?.disconnect()
-      await port?.close()
-    }
+  onDestroy(async () => {
+    await rpcClient?.disconnect()
+    await port?.close()
   })
 </script>
 

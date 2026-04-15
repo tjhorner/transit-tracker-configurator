@@ -9,7 +9,7 @@
   import type { TransitTrackerDevice } from "$lib/device/transit-tracker-device"
   import { NetworkTransitTrackerDevice } from "$lib/device/network-device"
   import { getSerialContext } from "$lib/serial-context"
-  import { onMount } from "svelte"
+  import { onDestroy } from "svelte"
 
   const ctx = getSerialContext()
 
@@ -65,10 +65,8 @@
     }
   }
 
-  onMount(() => {
-    return async () => {
-      await device?.close?.()
-    }
+  onDestroy(async () => {
+    await device?.close?.()
   })
 </script>
 
