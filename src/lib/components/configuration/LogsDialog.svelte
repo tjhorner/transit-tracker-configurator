@@ -3,8 +3,10 @@
   import { Terminal } from "@xterm/xterm"
   import { FitAddon } from "@xterm/addon-fit"
   import { onMount } from "svelte"
-  import { getSerialPort } from "$lib/utils"
   import { Button } from "../ui/button"
+  import { getSerialContext } from "$lib/serial-context"
+
+  const ctx = getSerialContext()
 
   let logsEl: HTMLDivElement | null = null
   let terminal: Terminal | null = null
@@ -43,7 +45,7 @@
   }
 
   async function connectTerminal() {
-    port = await getSerialPort()
+    port = await ctx.getSerialPort()
 
     try {
       await port.open({ baudRate: 115200 })

@@ -1,11 +1,11 @@
 import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import { getWebSocketEndpoint, type ConfigState } from "./state"
-import { getSerialPort } from "./utils"
 import type { TransitTrackerDevice } from "./device/transit-tracker-device"
 import semver from "semver"
+import type { SerialContext } from "./serial-context"
 
-export async function getDeviceBaseUrl(): Promise<string> {
-  const port = await getSerialPort()
+export async function getDeviceBaseUrl(ctx: SerialContext): Promise<string> {
+  const port = await ctx.getSerialPort()
 
   try {
     await port.open({ baudRate: 115200 })
@@ -100,25 +100,13 @@ async function* configRequestGenerator(device: TransitTrackerDevice, config: Con
     config.headsignOverflow === "scroll" ? "ON" : "OFF"
   )
 
-  yield device.setTextEntity(
-    "now_str_config",
-    config.localization.now
-  )
+  yield device.setTextEntity("now_str_config", config.localization.now)
 
-  yield device.setTextEntity(
-    "min_long_str_config",
-    config.localization.minLong
-  )
+  yield device.setTextEntity("min_long_str_config", config.localization.minLong)
 
-  yield device.setTextEntity(
-    "min_short_str_config",
-    config.localization.minShort
-  )
+  yield device.setTextEntity("min_short_str_config", config.localization.minShort)
 
-  yield device.setTextEntity(
-    "hours_short_str_config",
-    config.localization.hoursShort
-  )
+  yield device.setTextEntity("hours_short_str_config", config.localization.hoursShort)
 }
 
 export async function pushConfigToDevice(config: ConfigState, device: TransitTrackerDevice) {

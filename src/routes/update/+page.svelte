@@ -5,8 +5,8 @@
   import { Button } from "$lib/components/ui/button"
   import * as Card from "$lib/components/ui/card"
   import { ESPHomeRpcClient, type DeviceInfo } from "$lib/esphome-rpc"
-  import { getSerialPort } from "$lib/utils"
-  import { CheckCircle, CircleCheck, Clipboard } from "@lucide/svelte"
+  import { getSerialContext } from "$lib/serial-context"
+  import { CircleCheck, Clipboard } from "@lucide/svelte"
   import { onMount } from "svelte"
   import { toast } from "svelte-sonner"
 
@@ -17,6 +17,8 @@
 
   let port: SerialPort | null = $state(null)
   let rpcClient: ESPHomeRpcClient | null = $state(null)
+
+  const ctx = getSerialContext()
 
   async function getLatestVersion() {
     const resp = await fetch("https://transit-tracker.eastsideurbanism.org/firmware/manifest.json")
@@ -29,7 +31,7 @@
   }
 
   async function getCurrentVersion() {
-    port = await getSerialPort()
+    port = await ctx.getSerialPort()
 
     try {
       await port.open({ baudRate: 115200 })
@@ -51,7 +53,7 @@
 
     try {
       await rpcClient.connect()
-      
+
       rpcClient.addEventListener("disconnect", () => {
         rpcClient = null
       })
@@ -59,7 +61,9 @@
       const deviceInfo = await rpcClient.getDeviceInfo()
       return deviceInfo.project_version
     } catch (error: any) {
-      alert(`Your Transit Tracker isn't responding properly. Please try pressing the RESET button on the board and try again.\n\nError: ${error.message || error}`)
+      alert(
+        `Your Transit Tracker isn't responding properly. Please try pressing the RESET button on the board and try again.\n\nError: ${error.message || error}`
+      )
       await rpcClient.disconnect()
       rpcClient = null
     }
@@ -80,8 +84,6 @@
 
       latestFirmwareVersion = latestVersion
       currentFirmwareVersion = currentVersion
-    } catch (e: any) {
-      alert(`Failed to check for updates. Error: ${e.message}`)
     } finally {
       checking = false
       await rpcClient?.disconnect()
@@ -109,18 +111,25 @@
       {#if currentFirmwareVersion === latestFirmwareVersion}
         <div class="flex items-center gap-2 text-lg">
           <CircleCheck size={24} class="text-green-400" />
-          <strong>Your Transit Tracker is running the latest firmware: {latestFirmwareVersion}</strong>
+          <strong
+            >Your Transit Tracker is running the latest firmware: {latestFirmwareVersion}</strong
+          >
         </div>
       {:else}
-        <h2 class="text-center font-bold text-xl">Update available!</h2>
+        <h2 class="text-center text-xl font-bold">Update available!</h2>
 
-        <p class="mb-4 mt-2 leading-6 text-center text-lg font-medium">
+        <p class="mb-4 mt-2 text-center text-lg font-medium leading-6">
           {currentFirmwareVersion}
           <span class="mx-2 text-gray-400">→</span>
           {latestFirmwareVersion}
         </p>
 
-        <Button variant="secondary" class="w-full mb-3" href="https://github.com/EastsideUrbanism/transit-tracker/releases/tag/{latestFirmwareVersion}" target="_blank">
+        <Button
+          variant="secondary"
+          class="mb-3 w-full"
+          href="https://github.com/EastsideUrbanism/transit-tracker/releases/tag/{latestFirmwareVersion}"
+          target="_blank"
+        >
           <Clipboard /> View release notes
         </Button>
 

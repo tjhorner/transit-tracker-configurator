@@ -1,9 +1,21 @@
 import { ConfigValidationError, type TransitTrackerDevice } from "./transit-tracker-device"
 import { ESPHomeRpcClient } from "$lib/esphome-rpc"
-import { getSerialPort } from "$lib/utils"
+import type { SerialContext } from "$lib/serial-context"
 
 export class UsbTransitTrackerDevice implements TransitTrackerDevice {
-  static instance: UsbTransitTrackerDevice = new UsbTransitTrackerDevice()
+  private static instance: UsbTransitTrackerDevice | null = null
+
+  static getInstance(ctx: SerialContext): UsbTransitTrackerDevice {
+    if (!UsbTransitTrackerDevice.instance) {
+      UsbTransitTrackerDevice.instance = new UsbTransitTrackerDevice(ctx)
+    } else {
+      UsbTransitTrackerDevice.instance.ctx = ctx
+    }
+
+    return UsbTransitTrackerDevice.instance
+  }
+
+  constructor(private ctx: SerialContext) {}
 
   private port: SerialPort | null = null
   private rpc: ESPHomeRpcClient | null = null
@@ -61,7 +73,7 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
 
   private async initializeRpc() {
     if (!this.port) {
-      this.port = await getSerialPort()
+      this.port = await this.ctx.getSerialPort()
 
       try {
         await this.port.open({ baudRate: 115200 })

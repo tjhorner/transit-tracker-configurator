@@ -6,12 +6,15 @@
   import { Button } from "../ui/button"
   import { Input } from "../ui/input"
   import type { DeviceConnection } from "$lib/state"
+  import { getSerialContext } from "$lib/serial-context"
 
   interface Props {
     onSuccess?: (deviceConnection: DeviceConnection) => void
   }
 
   let { onSuccess }: Props = $props()
+
+  const ctx = getSerialContext()
 
   let connectionType: "usb" | "network" = $state("usb")
   let ipAddress = $state("")
@@ -29,7 +32,7 @@
     connecting = true
 
     try {
-      const baseUrl = await getDeviceBaseUrl()
+      const baseUrl = await getDeviceBaseUrl(ctx)
       onSuccess?.({
         type: "network",
         baseUrl

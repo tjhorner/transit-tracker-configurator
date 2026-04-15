@@ -2,6 +2,7 @@
   import { ModeWatcher } from "mode-watcher"
   import { Toaster } from "$lib/components/ui/sonner"
   import "../app.css"
+  import SerialPortProvider from "$lib/components/SerialPortProvider.svelte"
 
   let { children } = $props()
 </script>
@@ -13,11 +14,13 @@
 <ModeWatcher />
 <Toaster position="bottom-center" />
 
-<div class="layout-container">
-  <div class="py-12">
-    {@render children()}
+<SerialPortProvider>
+  <div class="layout-container">
+    <div class="py-12">
+      {@render children()}
+    </div>
   </div>
-</div>
+</SerialPortProvider>
 
 <style>
   .layout-container {

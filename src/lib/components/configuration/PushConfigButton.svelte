@@ -8,13 +8,17 @@
   import { UsbTransitTrackerDevice } from "$lib/device/usb-device"
   import type { TransitTrackerDevice } from "$lib/device/transit-tracker-device"
   import { NetworkTransitTrackerDevice } from "$lib/device/network-device"
+  import { getSerialContext } from "$lib/serial-context"
+  import { onMount } from "svelte"
+
+  const ctx = getSerialContext()
 
   let pushing = $state(false)
+  let device: TransitTrackerDevice | null = null
 
   async function pushConfig() {
-    let device: TransitTrackerDevice
     if ($deviceConnection.type === "usb") {
-      device = UsbTransitTrackerDevice.instance
+      device = UsbTransitTrackerDevice.getInstance(ctx)
     } else if ($deviceConnection.type === "network") {
       device = new NetworkTransitTrackerDevice($deviceConnection.baseUrl!)
     } else {
@@ -25,7 +29,7 @@
     pushing = true
     try {
       const results = await pushConfigToDevice($config, device)
-      await device.close?.()
+      await device?.close?.()
 
       const errors = results.filter((result) => !result)
       if (errors.length > 0) {
@@ -43,14 +47,6 @@
         toast.success("Configuration saved successfully")
       }
     } catch (e: any) {
-      if (e.message.includes("No port selected")) {
-        toast.info("Not seeing your Transit Tracker in the list?", {
-          description: "Make sure your USB cable supports data transfer and not just charging.",
-          duration: 10000
-        })
-        return
-      }
-
       if (e.name === "ConfigValidationError") {
         toast.error("Validation failed", {
           description: e.message,
@@ -65,9 +61,15 @@
       })
     } finally {
       pushing = false
-      await device.close?.()
+      await device?.close?.()
     }
   }
+
+  onMount(() => {
+    return async () => {
+      await device?.close?.()
+    }
+  })
 </script>
 
 <Button class="flex-grow" onclick={pushConfig} disabled={pushing}>
