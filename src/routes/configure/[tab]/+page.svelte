@@ -56,7 +56,7 @@
 </Dialog.Root>
 
 <Dialog.Root bind:open={showYamlDialog}>
-  <Dialog.Content class="overflow-y-auto max-h-screen">
+  <Dialog.Content class="max-h-screen overflow-y-auto">
     <Dialog.Header>
       <Dialog.Title>Generate YAML</Dialog.Title>
       <Dialog.Description>

@@ -108,7 +108,9 @@
     </div>
     <div class="flex items-center space-x-2">
       <RadioGroup.Item value="scroll" id="scroll" />
-      <Label for="scroll">Scroll &mdash; headsigns will scroll back and forth to reveal all text</Label>
+      <Label for="scroll"
+        >Scroll &mdash; headsigns will scroll back and forth to reveal all text</Label
+      >
     </div>
   </RadioGroup.Root>
 </div>

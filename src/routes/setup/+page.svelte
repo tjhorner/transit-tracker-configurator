@@ -42,8 +42,8 @@
       </Tabs.List>
       <Tabs.Content value="firmware">
         <p>
-          If this is the first time setting up your Transit Tracker, you'll
-          first need to perform the following steps:
+          If this is the first time setting up your Transit Tracker, you'll first need to perform
+          the following steps:
         </p>
 
         <ol class="my-3 ml-6 list-decimal">

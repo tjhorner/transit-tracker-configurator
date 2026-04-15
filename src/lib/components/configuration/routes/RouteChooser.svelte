@@ -12,7 +12,14 @@
     disabled?: boolean
   }
 
-  const { shown, stop, selected, onRouteSelected, onRouteDeselected, disabled = false }: Props = $props()
+  const {
+    shown,
+    stop,
+    selected,
+    onRouteSelected,
+    onRouteDeselected,
+    disabled = false
+  }: Props = $props()
 
   let routes: Route[] = $state([])
   let loadError: string | null = $state(null)

@@ -20,14 +20,7 @@
 <Popup bind:open={shown} closeOnMove popupClass="p-0">
   <div class="route-chooser">
     {#each stops as stop (stop.stopId)}
-      <RouteChooser
-        {shown}
-        {stop}
-        {selected}
-        {disabled}
-        onRouteSelected={onRouteSelected}
-        onRouteDeselected={onRouteDeselected}
-      />
+      <RouteChooser {shown} {stop} {selected} {disabled} {onRouteSelected} {onRouteDeselected} />
     {/each}
   </div>
 </Popup>

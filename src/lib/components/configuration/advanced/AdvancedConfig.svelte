@@ -64,8 +64,8 @@
   <h4 class="mb-1 scroll-m-20 text-xl font-semibold tracking-tight">Display Orientation</h4>
 
   <div class="mb-2 text-sm text-muted-foreground">
-    This option has no effect starting with firmware version 2.7.0; orientation
-    is automatically detected with the accelerometer.
+    This option has no effect starting with firmware version 2.7.0; orientation is automatically
+    detected with the accelerometer.
   </div>
 
   <RadioGroup.Root bind:value={$config.displayOrientation}>

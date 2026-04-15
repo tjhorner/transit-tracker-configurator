@@ -40,7 +40,7 @@
 <input
   bind:this={input}
   {...restProps}
-  class="w-96 bg-white text-black rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  class="w-96 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
   type="text"
   placeholder="Search for a location..."
   onkeydown={(e) => e.key === "Enter" && e.preventDefault()}

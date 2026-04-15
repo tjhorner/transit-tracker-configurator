@@ -140,7 +140,7 @@ export class ESPHomeRpcClient extends EventTarget {
           reject(new Error("Liveness check timed out"))
         }, 1000)
       })
-  
+
       const request = this.getDeviceInfo()
 
       try {
