@@ -14,6 +14,7 @@
   const abbreviations = $config.abbreviations
   const routeStyles = $config.routeStyles
   const unitDisplay = $config.timeUnits
+  const scrollHeadsigns = $config.headsignOverflow === "scroll"
 
   let apiTrips: ApiTrip[] = $state([])
 
@@ -68,7 +69,8 @@
         brightness: 1.3,
         pixelPitch: 8,
         glowRadius: 16,
-        unitDisplay
+        unitDisplay,
+        scrollHeadsigns
       }}
       class="w-full"
     />
