@@ -5,6 +5,7 @@
   import { Transport, ESPLoader } from "esptool-js"
   import { sleep } from "$lib/utils"
   import { getSerialContext } from "$lib/serial-context"
+  import { onDestroy } from "svelte"
 
   interface Props {
     file?: string
@@ -29,13 +30,15 @@
   let statusMessage = $state("")
   let success = $state(false)
 
+  let port: SerialPort | null = $state(null)
+
   async function beginFlash() {
     flashing = true
     progress = 0
     statusMessage = "Connecting to Transit Tracker..."
 
     try {
-      const port = await ctx.getSerialPort(bootButtonRequired)
+      port = await ctx.getOpenSerialPort(bootButtonRequired)
 
       const transport = new Transport(port)
       const esploader = new ESPLoader({
@@ -93,6 +96,8 @@
       success = false
     } finally {
       flashing = false
+      await port?.close()
+      port = null
     }
   }
 
@@ -111,6 +116,10 @@
 
     await sleep(250)
   }
+
+  onDestroy(async () => {
+    await port?.close()
+  })
 </script>
 
 <p class="mb-4 leading-6">

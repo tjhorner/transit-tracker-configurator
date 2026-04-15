@@ -73,22 +73,7 @@ export class UsbTransitTrackerDevice implements TransitTrackerDevice {
 
   private async initializeRpc() {
     if (!this.port) {
-      this.port = await this.ctx.getSerialPort()
-
-      try {
-        await this.port.open({ baudRate: 115200 })
-      } catch (e: any) {
-        if (e.message.includes("already open")) {
-          await this.port.close()
-          await this.port.open({ baudRate: 115200 })
-        }
-
-        if (e.message.includes("Failed to open serial port")) {
-          throw new Error(
-            "Couldn't open serial port. Please close all other tabs or applications that might be connecting to the device."
-          )
-        }
-      }
+      this.port = await this.ctx.getOpenSerialPort()
     }
 
     if (!this.rpc) {

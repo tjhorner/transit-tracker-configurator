@@ -45,16 +45,7 @@
   }
 
   async function connectTerminal() {
-    port = await ctx.getSerialPort()
-
-    try {
-      await port.open({ baudRate: 115200 })
-    } catch (e: any) {
-      if (e.message.includes("already open")) {
-        await port.close()
-        await port.open({ baudRate: 115200 })
-      }
-    }
+    port = await ctx.getOpenSerialPort()
 
     try {
       await port.readable
@@ -104,9 +95,10 @@
     fitAddon.fit()
     connectTerminal()
 
-    return () => {
+    return async () => {
       abortController.abort()
       terminal?.dispose()
+      await port?.close()
     }
   })
 </script>

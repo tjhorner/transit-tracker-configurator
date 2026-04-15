@@ -1,20 +1,16 @@
 <script lang="ts">
   import { Label } from "$lib/components/ui/label"
   import * as RadioGroup from "$lib/components/ui/radio-group"
-  import { getDeviceBaseUrl } from "$lib/device"
   import { Cable, Usb, Wifi } from "@lucide/svelte"
   import { Button } from "../ui/button"
   import { Input } from "../ui/input"
   import type { DeviceConnection } from "$lib/state"
-  import { getSerialContext } from "$lib/serial-context"
 
   interface Props {
     onSuccess?: (deviceConnection: DeviceConnection) => void
   }
 
   let { onSuccess }: Props = $props()
-
-  const ctx = getSerialContext()
 
   let connectionType: "usb" | "network" = $state("usb")
   let ipAddress = $state("")
@@ -27,22 +23,6 @@
   }
 
   const browserSupportsWebSerial = "serial" in navigator
-
-  async function tryToConnect() {
-    connecting = true
-
-    try {
-      const baseUrl = await getDeviceBaseUrl(ctx)
-      onSuccess?.({
-        type: "network",
-        baseUrl
-      })
-    } catch (e: any) {
-      alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
-    } finally {
-      connecting = false
-    }
-  }
 
   async function setIpAddress() {
     const baseUrl = new URL(`http://${ipAddress}`)

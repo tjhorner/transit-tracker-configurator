@@ -29,7 +29,6 @@
     pushing = true
     try {
       const results = await pushConfigToDevice($config, device)
-      await device?.close?.()
 
       const errors = results.filter((result) => !result)
       if (errors.length > 0) {

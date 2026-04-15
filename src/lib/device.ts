@@ -1,48 +1,6 @@
-import { ImprovSerial } from "improv-wifi-serial-sdk/dist/serial"
 import { getWebSocketEndpoint, type ConfigState } from "./state"
 import type { TransitTrackerDevice } from "./device/transit-tracker-device"
 import semver from "semver"
-import type { SerialContext } from "./serial-context"
-
-export async function getDeviceBaseUrl(ctx: SerialContext): Promise<string> {
-  const port = await ctx.getSerialPort()
-
-  try {
-    await port.open({ baudRate: 115200 })
-  } catch (e: any) {
-    if (e.message.includes("already open")) {
-      await port.close()
-      await port.open({ baudRate: 115200 })
-    }
-  }
-
-  const improv = new ImprovSerial(port, console)
-
-  let retries = 0
-  let deviceBaseUrl: string | undefined
-  while (!deviceBaseUrl && retries <= 3) {
-    try {
-      await improv.initialize()
-
-      if (!improv.nextUrl) {
-        throw new Error("Device did not report URL")
-      }
-
-      deviceBaseUrl = improv.nextUrl
-      await improv.close()
-    } catch (e: any) {
-      console.warn(e)
-      retries++
-      if (retries > 3) {
-        throw e
-      }
-    }
-  }
-
-  await port.close()
-
-  return improv.nextUrl!
-}
 
 async function* configRequestGenerator(device: TransitTrackerDevice, config: ConfigState) {
   let projectVersion = await device.getProjectVersion()
@@ -119,6 +77,8 @@ export async function pushConfigToDevice(config: ConfigState, device: TransitTra
 
   await device.pressButton("write_preferences")
   await device.pressButton("reload_tracker")
+
+  await device.close?.()
 
   return results
 }

@@ -31,23 +31,7 @@
   }
 
   async function getCurrentVersion() {
-    port = await ctx.getSerialPort()
-
-    try {
-      await port.open({ baudRate: 115200 })
-    } catch (e: any) {
-      if (e.message.includes("Failed to open serial port")) {
-        alert(
-          "Couldn't open serial port. Please close all other browser tabs or applications that might be connecting to the device."
-        )
-        return
-      }
-
-      if (!e.message.endsWith("already open.")) {
-        alert(`Unable to connect to Transit Tracker. Error: ${e.message}`)
-        return
-      }
-    }
+    port = await ctx.getOpenSerialPort()
 
     rpcClient = new ESPHomeRpcClient(port)
 
@@ -64,8 +48,12 @@
       alert(
         `Your Transit Tracker isn't responding properly. Please try pressing the RESET button on the board and try again.\n\nError: ${error.message || error}`
       )
-      await rpcClient.disconnect()
+    } finally {
+      await rpcClient?.disconnect()
       rpcClient = null
+
+      await port?.close()
+      port = null
     }
   }
 
@@ -86,8 +74,6 @@
       currentFirmwareVersion = currentVersion
     } finally {
       checking = false
-      await rpcClient?.disconnect()
-      await port?.close()
     }
   }
 
