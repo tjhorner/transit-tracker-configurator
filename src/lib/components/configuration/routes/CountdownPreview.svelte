@@ -34,7 +34,7 @@
           routeId: trip.routeId,
           routeName: style?.name || trip.routeName,
           routeColor: style?.color
-            ? hexColor(parseInt(style.color, 16))
+            ? hexColor(parseInt(style.color.slice(1), 16))
             : route?.color
               ? hexColor(parseInt(route.color, 16))
               : { r: 0xff, g: 0xff, b: 0xff },
