@@ -7,7 +7,9 @@
   let bootButtonRequired = $state(false)
   let { children } = $props()
 
-  async function getSerialPort(): Promise<SerialPort> {
+  async function getSerialPort(withBootButtonRequired = false): Promise<SerialPort> {
+    bootButtonRequired = withBootButtonRequired
+
     if (!("serial" in navigator)) {
       alert("Web Serial API is not supported in this browser.")
       throw new Error("Web Serial API not supported")
@@ -34,9 +36,7 @@
   }
 
   async function getOpenSerialPort(withBootButtonRequired = false): Promise<SerialPort> {
-    bootButtonRequired = withBootButtonRequired
-
-    const port = await getSerialPort()
+    const port = await getSerialPort(withBootButtonRequired)
 
     try {
       await port.open({ baudRate: 115200 })
@@ -60,6 +60,7 @@
   }
 
   setSerialContext({
+    getSerialPort,
     getOpenSerialPort
   })
 </script>

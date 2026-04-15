@@ -38,7 +38,7 @@
     statusMessage = "Connecting to Transit Tracker..."
 
     try {
-      port = await ctx.getOpenSerialPort(bootButtonRequired)
+      port = await ctx.getSerialPort(bootButtonRequired)
 
       const transport = new Transport(port)
       const esploader = new ESPLoader({
