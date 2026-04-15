@@ -224,12 +224,8 @@
     <div class="mt-4 flex flex-grow flex-col justify-end gap-3">
       {#if selected.length > 0}
         <div>
-          <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">Countdown Preview</h3>
-          <Card.Root>
-            <Card.Content class="p-3">
-              <CountdownPreview routes={selected} {timeOffsets} />
-            </Card.Content>
-          </Card.Root>
+          <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">Preview</h3>
+          <CountdownPreview routes={selected} {timeOffsets} />
         </div>
       {/if}
 
