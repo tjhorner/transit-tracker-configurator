@@ -20,6 +20,7 @@
   import RouteChooserPopup from "./RouteChooserPopup.svelte"
   import LocationSearch from "./LocationSearch.svelte"
   import { PUBLIC_GOOGLE_MAPS_API_KEY as googleMapsApiKey } from "$env/static/public"
+  import { fly, slide } from "svelte/transition"
 
   interface Props {
     config: ConfigState
@@ -223,7 +224,7 @@
 
     <div class="mt-4 flex flex-grow flex-col justify-end gap-3">
       {#if selected.length > 0}
-        <div>
+        <div transition:fly={{ duration: 300, y: 10 }}>
           <h3 class="mb-2 scroll-m-20 text-2xl font-semibold tracking-tight">Preview</h3>
           <CountdownPreview routes={selected} {timeOffsets} />
         </div>

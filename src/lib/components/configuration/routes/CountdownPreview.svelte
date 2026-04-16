@@ -37,7 +37,7 @@
             ? hexColor(parseInt(style.color.slice(1), 16))
             : route?.color
               ? hexColor(parseInt(route.color, 16))
-              : { r: 0xff, g: 0xff, b: 0xff },
+              : { r: 0x02, g: 0x8e, b: 0x51 },
           headsign,
           arrivalTime: trip.arrivalTime + offset * -60,
           departureTime: trip.departureTime + offset * -60,
